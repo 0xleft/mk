@@ -1,0 +1,1 @@
+chess.h and chess.cpp is mostly stolen from https://gist.github.com/geocachecs/d8d2f402b0843231231b by https://github.com/geocachecs
