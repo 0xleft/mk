@@ -1,6 +1,9 @@
 #pragma once
 
 #include <cmath>
+#include <vector>
+#include <display.h>
+#include <eadkpp.h>
 
 namespace Chess {
     enum Piece { KING, QUEEN, BISHOP, KNIGHT, ROOK, PAWN, EMPTY };
@@ -42,7 +45,6 @@ namespace Chess {
         int getY1() { return this->y1; }
         int getX2() { return this->x2; }
         int getY2() { return this->y2; }
-        ~Move() {}
     };
 
     class Board {
@@ -81,5 +83,16 @@ namespace Chess {
             square[6][7].setPieceAndColor(KNIGHT, BLACK);
             square[7][7].setPieceAndColor(ROOK, BLACK);
         }
+
+        void move(Move move) {
+            Square* square1 = getSquare(move.getX1(), move.getY1());
+            Square* square2 = getSquare(move.getX2(), move.getY2());
+            square2->setSpace(square1);
+            square1->setEmpty();
+        }
+
+        // legal moves
+        std::vector<Move> getLegalMoves();
+        void draw();
     };
 }
