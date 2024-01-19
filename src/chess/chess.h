@@ -36,22 +36,44 @@ namespace Chess {
     private:
         int x1, y1;
         int x2, y2;
+        bool isCastle = false;
+        bool 
     public:
         Move(int x1, int y1, int x2, int y2) {
             this->x1 = x1; this->y1 = y1;
             this->x2 = x2; this->y2 = y2;
         }
+        Move(int x1, int y1, int x2, int y2, bool isCastle) {
+            this->x1 = x1; this->y1 = y1;
+            this->x2 = x2; this->y2 = y2;
+            this->isCastle = isCastle;
+        }
         int getX1() { return this->x1; }
         int getY1() { return this->y1; }
         int getX2() { return this->x2; }
         int getY2() { return this->y2; }
+        bool getIsCastle() { return this->isCastle; }
+
+        void setX1(int x1) { this->x1 = x1; }
+        void setY1(int y1) { this->y1 = y1; }
+        void setX2(int x2) { this->x2 = x2; }
+        void setY2(int y2) { this->y2 = y2; }
+        void setIsCastle(bool isCastle) { this->isCastle = isCastle; }
     };
 
     class Board {
     private:
         Square square[8][8];
         Color turn = WHITE;
+        // for en passant
+        Move lastMove = Move(0, 0, 0, 0);
 
+        std::vector<Move> getLegalMovesPawn(int x, int y);
+        std::vector<Move> getLegalMovesRook(int x, int y);
+        std::vector<Move> getLegalMovesKnight(int x, int y);
+        std::vector<Move> getLegalMovesBishop(int x, int y);
+        std::vector<Move> getLegalMovesQueen(int x, int y);
+        std::vector<Move> getLegalMovesKing(int x, int y);
     public:
         Square* getSquare(int x, int y) {
             return &square[x][y];
