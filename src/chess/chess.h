@@ -13,6 +13,7 @@ namespace Chess {
     private:
         Piece piece = EMPTY;
         Color color = NONE;
+        bool moved = false;
         int x, y;
     public:
         void setSpace(Square* piece) { this->piece = piece->getPiece(); this->color = piece->getColor(); };
@@ -28,8 +29,10 @@ namespace Chess {
         Color getColor() { return this->color; }
         void setX(int x) { this->x = x; }
         void setY(int y) { this->y = y; }
+        void setMoved(bool moved) { this->moved = moved; }
         int getX() { return this->x; }
         int getY() { return this->y; }
+        bool getMoved() { return this->moved; }
     };
 
     class Move {
@@ -37,7 +40,6 @@ namespace Chess {
         int x1, y1;
         int x2, y2;
         bool isCastle = false;
-        bool 
     public:
         Move(int x1, int y1, int x2, int y2) {
             this->x1 = x1; this->y1 = y1;
@@ -111,7 +113,46 @@ namespace Chess {
             Square* square2 = getSquare(move.getX2(), move.getY2());
             square2->setSpace(square1);
             square1->setEmpty();
+            square2->setMoved(true);
+            lastMove = move;
+            if (turn == WHITE) {
+                turn = BLACK;
+            }
+            else {
+                turn = WHITE;
+            }
         }
+
+        std::vector<Square*> getPieces(Color color) {
+            std::vector<Square*> pieces;
+            for (int x = 0; x < 8; x++) {
+                for (int y = 0; y < 8; y++) {
+                    Square* square = getSquare(x, y);
+                    if (square->getColor() == color) {
+                        pieces.push_back(square);
+                    }
+                }
+            }
+            return pieces;
+        }
+
+        std::vector<Square*> getAllPieces() {
+            std::vector<Square*> pieces;
+            for (int x = 0; x < 8; x++) {
+                for (int y = 0; y < 8; y++) {
+                    Square* square = getSquare(x, y);
+                    if (square->getColor() != NONE) {
+                        pieces.push_back(square);
+                    }
+                }
+            }
+            return pieces;
+        }
+
+        Color getTurn() { return this->turn; }
+        void setTurn(Color turn) { this->turn = turn; }
+        Move getLastMove() { return this->lastMove; }
+        void setLastMove(Move lastMove) { this->lastMove = lastMove; }
 
         // legal moves
         std::vector<Move> getLegalMoves();

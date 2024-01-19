@@ -356,6 +356,30 @@ std::vector<Chess::Move> Chess::Board::getLegalMovesKing(int x, int y) {
             }
         }
     }
+    // castling
+    if (square->getColor() == WHITE) {
+        if (this->getSquare(5, 0)->getPiece() == EMPTY && this->getSquare(6, 0)->getPiece() == EMPTY && !square->getMoved()) {
+            if (this->getSquare(7, 0)->getPiece() == ROOK && !this->getSquare(7, 0)->getMoved()) {
+                moves.push_back(Chess::Move(x, y, 6, 0, true));
+            }
+        }
+        if (this->getSquare(3, 0)->getPiece() == EMPTY && this->getSquare(2, 0)->getPiece() == EMPTY && this->getSquare(1, 0)->getPiece() == EMPTY && !square->getMoved()) {
+            if (this->getSquare(0, 0)->getPiece() == ROOK && !this->getSquare(0, 0)->getMoved()) {
+                moves.push_back(Chess::Move(x, y, 2, 0, true));
+            }
+        }
+    } else {
+        if (this->getSquare(5, 7)->getPiece() == EMPTY && this->getSquare(6, 7)->getPiece() == EMPTY && !square->getMoved()) {
+            if (this->getSquare(7, 7)->getPiece() == ROOK && !this->getSquare(7, 7)->getMoved()) {
+                moves.push_back(Chess::Move(x, y, 6, 7, true));
+            }
+        }
+        if (this->getSquare(3, 7)->getPiece() == EMPTY && this->getSquare(2, 7)->getPiece() == EMPTY && this->getSquare(1, 7)->getPiece() == EMPTY && !square->getMoved()) {
+            if (this->getSquare(0, 7)->getPiece() == ROOK && !this->getSquare(0, 7)->getMoved()) {
+                moves.push_back(Chess::Move(x, y, 2, 7, true));
+            }
+        }
+    }
 
     return moves;
 }

@@ -8,6 +8,7 @@ namespace Engine {
         static int evaluate(Chess::Board board);
 
     private:
+    
         
     };
 }
