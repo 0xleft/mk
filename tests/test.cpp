@@ -11,6 +11,5 @@ int main() {
     Chess::Board board;
 	Chess::Square* square = board.getSquare(0, 0);
 
-
     return 0;
 }

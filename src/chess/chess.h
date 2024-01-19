@@ -66,6 +66,7 @@ namespace Chess {
     private:
         std::vector<Square*> squares;
         Color turn = WHITE;
+        Piece selectedPromotion = QUEEN;
         // for en passant
         Move lastMove = Move(0, 0, 0, 0);
     public:
@@ -105,13 +106,78 @@ namespace Chess {
             getSquare(7, 7)->setPieceAndColor(ROOK, BLACK);
         }
 
+        void setSelectedPromotion(Piece piece) {
+            this->selectedPromotion = piece;
+        }
+        Piece getSelectedPromotion() {
+            return this->selectedPromotion;
+        }
+
         void move(Move move) {
             Square* square1 = getSquare(move.getX1(), move.getY1());
             Square* square2 = getSquare(move.getX2(), move.getY2());
             square2->setPieceAndColor(square1->getPiece(), square1->getColor());
             square1->setEmpty();
             square2->setMoved(true);
-            lastMove = move;
+            // en passant
+            if (square1->getPiece() == PAWN && abs(move.getY2() - move.getY1()) == 2) {
+                this->lastMove = move;
+            }
+            else {
+                this->lastMove = Move(0, 0, 0, 0);
+            }
+            // castling
+            if (square1->getPiece() == KING && abs(move.getX2() - move.getX1()) == 2) {
+                if (move.getX2() == 2) {
+                    getSquare(0, move.getY2())->setPieceAndColor(EMPTY, NONE);
+                    getSquare(3, move.getY2())->setPieceAndColor(ROOK, square1->getColor());
+                }
+                else if (move.getX2() == 6) {
+                    getSquare(7, move.getY2())->setPieceAndColor(EMPTY, NONE);
+                    getSquare(5, move.getY2())->setPieceAndColor(ROOK, square1->getColor());
+                }
+            }
+            // promotion
+            if (square1->getPiece() == PAWN && (move.getY2() == 0 || move.getY2() == 7)) {
+                square2->setPieceAndColor(selectedPromotion, square1->getColor());
+            }
+            this->lastMove = move;
+            if (turn == WHITE) {
+                turn = BLACK;
+            }
+            else {
+                turn = WHITE;
+            }
+        }
+
+        void moveBack() {
+            Square* square1 = getSquare(lastMove.getX1(), lastMove.getY1());
+            Square* square2 = getSquare(lastMove.getX2(), lastMove.getY2());
+            square1->setPieceAndColor(square2->getPiece(), square2->getColor());
+            square2->setEmpty();
+            square1->setMoved(false);
+            // en passant
+            if (square1->getPiece() == PAWN && abs(lastMove.getY2() - lastMove.getY1()) == 2) {
+                this->lastMove = Move(0, 0, 0, 0);
+            }
+            else {
+                this->lastMove = Move(0, 0, 0, 0);
+            }
+            // castling
+            if (square1->getPiece() == KING && abs(lastMove.getX2() - lastMove.getX1()) == 2) {
+                if (lastMove.getX2() == 2) {
+                    getSquare(0, lastMove.getY2())->setPieceAndColor(ROOK, square1->getColor());
+                    getSquare(3, lastMove.getY2())->setPieceAndColor(EMPTY, NONE);
+                }
+                else if (lastMove.getX2() == 6) {
+                    getSquare(7, lastMove.getY2())->setPieceAndColor(ROOK, square1->getColor());
+                    getSquare(5, lastMove.getY2())->setPieceAndColor(EMPTY, NONE);
+                }
+            }
+            // promotion
+            if (square1->getPiece() == PAWN && (lastMove.getY2() == 0 || lastMove.getY2() == 7)) {
+                square1->setPieceAndColor(PAWN, square1->getColor());
+            }
             if (turn == WHITE) {
                 turn = BLACK;
             }
