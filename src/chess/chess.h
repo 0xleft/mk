@@ -16,12 +16,11 @@ namespace Chess {
         bool moved = false;
         int x, y;
     public:
-        void setSpace(Square* piece) { this->piece = piece->getPiece(); this->color = piece->getColor(); };
         void setEmpty() {
             this->piece = EMPTY;
             this->color = NONE;
         }
-        void setPieceAndColor(Piece, Color) {
+        void setPieceAndColor(Piece piece, Color color) {
             this->piece = piece;
             this->color = color;
         }
@@ -65,53 +64,51 @@ namespace Chess {
 
     class Board {
     private:
-        Square square[8][8];
+        std::vector<Square*> squares;
         Color turn = WHITE;
         // for en passant
         Move lastMove = Move(0, 0, 0, 0);
-
-        std::vector<Move> getLegalMovesPawn(int x, int y);
-        std::vector<Move> getLegalMovesRook(int x, int y);
-        std::vector<Move> getLegalMovesKnight(int x, int y);
-        std::vector<Move> getLegalMovesBishop(int x, int y);
-        std::vector<Move> getLegalMovesQueen(int x, int y);
-        std::vector<Move> getLegalMovesKing(int x, int y);
     public:
         Square* getSquare(int x, int y) {
-            return &square[x][y];
-        }
-        void setSquare(Square& square, int x, int y){
-            this->square[x][y] = square;
+            return this->squares[x + y * 8];
         }
 
         Board() {
-            for (int i = 0; i < 8; i++) {
-                square[i][1].setPieceAndColor(PAWN, WHITE);
-                square[i][6].setPieceAndColor(PAWN, BLACK);
+            for (int i = 0; i < 64; i++) {
+                Square* square = new Square();
+                square->setX(i % 8);
+                square->setY(i / 8);
+                squares.push_back(square);
             }
-            square[0][0].setPieceAndColor(ROOK, WHITE);
-            square[1][0].setPieceAndColor(KNIGHT, WHITE);
-            square[2][0].setPieceAndColor(BISHOP, WHITE);
-            square[3][0].setPieceAndColor(QUEEN, WHITE);
-            square[4][0].setPieceAndColor(KING, WHITE);
-            square[5][0].setPieceAndColor(BISHOP, WHITE);
-            square[6][0].setPieceAndColor(KNIGHT, WHITE);
-            square[7][0].setPieceAndColor(ROOK, WHITE);
 
-            square[0][7].setPieceAndColor(ROOK, BLACK);
-            square[1][7].setPieceAndColor(KNIGHT, BLACK);
-            square[2][7].setPieceAndColor(BISHOP, BLACK);
-            square[3][7].setPieceAndColor(QUEEN, BLACK);
-            square[4][7].setPieceAndColor(KING, BLACK);
-            square[5][7].setPieceAndColor(BISHOP, BLACK);
-            square[6][7].setPieceAndColor(KNIGHT, BLACK);
-            square[7][7].setPieceAndColor(ROOK, BLACK);
+            for (int i = 0; i < 8; i++) {
+                getSquare(i, 1)->setPieceAndColor(PAWN, WHITE);
+                getSquare(i, 6)->setPieceAndColor(PAWN, BLACK);
+            }
+
+            getSquare(0, 0)->setPieceAndColor(ROOK, WHITE);
+            getSquare(1, 0)->setPieceAndColor(KNIGHT, WHITE);
+            getSquare(2, 0)->setPieceAndColor(BISHOP, WHITE);
+            getSquare(3, 0)->setPieceAndColor(QUEEN, WHITE);
+            getSquare(4, 0)->setPieceAndColor(KING, WHITE);
+            getSquare(5, 0)->setPieceAndColor(BISHOP, WHITE);
+            getSquare(6, 0)->setPieceAndColor(KNIGHT, WHITE);
+            getSquare(7, 0)->setPieceAndColor(ROOK, WHITE);
+            
+            getSquare(0, 7)->setPieceAndColor(ROOK, BLACK);
+            getSquare(1, 7)->setPieceAndColor(KNIGHT, BLACK);
+            getSquare(2, 7)->setPieceAndColor(BISHOP, BLACK);
+            getSquare(3, 7)->setPieceAndColor(QUEEN, BLACK);
+            getSquare(4, 7)->setPieceAndColor(KING, BLACK);
+            getSquare(5, 7)->setPieceAndColor(BISHOP, BLACK);
+            getSquare(6, 7)->setPieceAndColor(KNIGHT, BLACK);
+            getSquare(7, 7)->setPieceAndColor(ROOK, BLACK);
         }
 
         void move(Move move) {
             Square* square1 = getSquare(move.getX1(), move.getY1());
             Square* square2 = getSquare(move.getX2(), move.getY2());
-            square2->setSpace(square1);
+            square2->setPieceAndColor(square1->getPiece(), square1->getColor());
             square1->setEmpty();
             square2->setMoved(true);
             lastMove = move;
@@ -123,39 +120,15 @@ namespace Chess {
             }
         }
 
-        std::vector<Square*> getPieces(Color color) {
-            std::vector<Square*> pieces;
-            for (int x = 0; x < 8; x++) {
-                for (int y = 0; y < 8; y++) {
-                    Square* square = getSquare(x, y);
-                    if (square->getColor() == color) {
-                        pieces.push_back(square);
-                    }
-                }
-            }
-            return pieces;
-        }
-
-        std::vector<Square*> getAllPieces() {
-            std::vector<Square*> pieces;
-            for (int x = 0; x < 8; x++) {
-                for (int y = 0; y < 8; y++) {
-                    Square* square = getSquare(x, y);
-                    if (square->getColor() != NONE) {
-                        pieces.push_back(square);
-                    }
-                }
-            }
-            return pieces;
-        }
-
         Color getTurn() { return this->turn; }
         void setTurn(Color turn) { this->turn = turn; }
         Move getLastMove() { return this->lastMove; }
         void setLastMove(Move lastMove) { this->lastMove = lastMove; }
 
-        // legal moves
-        std::vector<Move> getLegalMoves();
-        void draw();
+        ~Board() {
+            for (int i = 0; i < 64; i++) {
+                delete squares[i];
+            }
+        }
     };
 }

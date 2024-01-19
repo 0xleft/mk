@@ -19,10 +19,9 @@ src += $(addprefix src/engine/,\
 )
 
 src += $(addprefix src/chess/,\
-	chess.cpp \
 )
 
-CPPFLAGS = -std=c++11 -fno-exceptions
+CPPFLAGS = -std=c++17 -fno-exceptions
 CPPFLAGS += -Os -Wall
 CPPFLAGS += $(shell $(NWLINK) eadk-cflags)
 CPPFLAGS += -Iinclude -Isrc -Isrc/engine -Isrc/chess
@@ -76,3 +75,4 @@ $(BUILD_DIR):
 clean:
 	@echo "CLEAN"
 	$(Q) rm -rf $(BUILD_DIR)
+
