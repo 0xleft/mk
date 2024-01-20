@@ -3,13 +3,13 @@
 #include <string>
 #include <vector>
 #include <cheats.h>
-#include <chess/chess.h>
-
+#include <chess/include.h>
 
 int main() {
 
     Chess::Board board;
-	Chess::Square* square = board.getSquare(0, 0);
+    std::vector<Chess::Move> moves = Chess::Generator::getLegalMoves(board);
+    std::cout << moves.size() << std::endl;
 
     return 0;
 }

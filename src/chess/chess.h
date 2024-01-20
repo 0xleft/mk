@@ -16,6 +16,11 @@ namespace Chess {
         bool moved = false;
         int x, y;
     public:
+        Square(Piece piece, Color color) {
+            this->piece = piece;
+            this->color = color;
+        }
+        Square() {}
         void setEmpty() {
             this->piece = EMPTY;
             this->color = NONE;
@@ -71,6 +76,9 @@ namespace Chess {
         Move lastMove = Move(0, 0, 0, 0);
     public:
         Square* getSquare(int x, int y) {
+            // if (x < 0 || x > 7 || y < 0 || y > 7) {
+            //     return nullptr;
+            // }
             return this->squares[x + y * 8];
         }
 
