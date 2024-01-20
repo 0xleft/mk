@@ -41,4 +41,4 @@ run: $(BUILD_DIR)/test
 	$(Q) $(BUILD_DIR)/test
 
 clean:
-	rm -f $(BUILD_DIR)/*.o $(BUILD_DIR)/test $(BUILD_DIR)/chess/*.o
+	rm -rf $(BUILD_DIR)

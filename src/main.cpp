@@ -13,7 +13,7 @@ int main(int argc, char* argv[]) {
 	Chess::Board board;
     std::vector<Chess::Move> moves = Chess::Generator::getLegalMoves(board);
 
-	while (!Chess::Generator::isEnd(board)) {
+	while (true) {
 		std::vector<Chess::Move> moves = Chess::Generator::getLegalMoves(board);
 		Chess::Move m = moves[0];
 		board.move(m);

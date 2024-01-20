@@ -2,6 +2,8 @@
 
 #include "chess.h"
 
+// there are probably a lot of missing moves here so if you down to improve this, please do
+
 namespace Chess {
     namespace Generator {
         std::vector<Move> getDiagonalMoves(Board& board, int x, int y) {
@@ -93,6 +95,7 @@ namespace Chess {
                     break;
                 }
             }
+
             return moves;
         };
 
@@ -177,14 +180,15 @@ namespace Chess {
         std::vector<Move> getKingMoves(Board& board, int x, int y) {
             std::vector<Move> moves;
             Color color = board.getSquare(x, y)->getColor();
+            // like queen but only one square
             if (x > 0) {
-                if (board.getSquare(x - 1, y)->getColor() != color) {
-                    moves.push_back(Move(x, y, x - 1, y));
-                }
                 if (y > 0) {
                     if (board.getSquare(x - 1, y - 1)->getColor() != color) {
                         moves.push_back(Move(x, y, x - 1, y - 1));
                     }
+                }
+                if (board.getSquare(x - 1, y)->getColor() != color) {
+                    moves.push_back(Move(x, y, x - 1, y));
                 }
                 if (y < 7) {
                     if (board.getSquare(x - 1, y + 1)->getColor() != color) {
@@ -193,13 +197,13 @@ namespace Chess {
                 }
             }
             if (x < 7) {
-                if (board.getSquare(x + 1, y)->getColor() != color) {
-                    moves.push_back(Move(x, y, x + 1, y));
-                }
                 if (y > 0) {
                     if (board.getSquare(x + 1, y - 1)->getColor() != color) {
                         moves.push_back(Move(x, y, x + 1, y - 1));
                     }
+                }
+                if (board.getSquare(x + 1, y)->getColor() != color) {
+                    moves.push_back(Move(x, y, x + 1, y));
                 }
                 if (y < 7) {
                     if (board.getSquare(x + 1, y + 1)->getColor() != color) {
@@ -215,30 +219,6 @@ namespace Chess {
             if (y < 7) {
                 if (board.getSquare(x, y + 1)->getColor() != color) {
                     moves.push_back(Move(x, y, x, y + 1));
-                }
-            }
-            // castling
-            if (color == Color::WHITE) {
-                if (board.getSquare(5, 7)->getPiece() == Piece::EMPTY && board.getSquare(6, 7)->getPiece() == Piece::EMPTY) {
-                    if (board.getSquare(7, 7)->getPiece() == Piece::ROOK && !board.getSquare(7, 7)->getMoved() && board.getSquare(7, 7)->getColor() == Color::WHITE && !board.getSquare(7, 7)->getMoved()) {
-                        moves.push_back(Move(4, 7, 6, 7, true));
-                    }
-                }
-                if (board.getSquare(3, 7)->getPiece() == Piece::EMPTY && board.getSquare(2, 7)->getPiece() == Piece::EMPTY && board.getSquare(1, 7)->getPiece() == Piece::EMPTY) {
-                    if (board.getSquare(0, 7)->getPiece() == Piece::ROOK && !board.getSquare(0, 7)->getMoved() && board.getSquare(0, 7)->getColor() == Color::WHITE && !board.getSquare(0, 7)->getMoved()) {
-                        moves.push_back(Move(4, 7, 2, 7, true));
-                    }
-                }
-            } else {
-                if (board.getSquare(5, 0)->getPiece() == Piece::EMPTY && board.getSquare(6, 0)->getPiece() == Piece::EMPTY) {
-                    if (board.getSquare(7, 0)->getPiece() == Piece::ROOK && !board.getSquare(7, 0)->getMoved() && board.getSquare(7, 0)->getColor() == Color::BLACK && !board.getSquare(7, 0)->getMoved()) {
-                        moves.push_back(Move(4, 0, 6, 0, true));
-                    }
-                }
-                if (board.getSquare(3, 0)->getPiece() == Piece::EMPTY && board.getSquare(2, 0)->getPiece() == Piece::EMPTY && board.getSquare(1, 0)->getPiece() == Piece::EMPTY) {
-                    if (board.getSquare(0, 0)->getPiece() == Piece::ROOK && !board.getSquare(0, 0)->getMoved() && board.getSquare(0, 0)->getColor() == Color::BLACK && !board.getSquare(0, 0)->getMoved()) {
-                        moves.push_back(Move(4, 0, 2, 0, true));
-                    }
                 }
             }
             return moves;
@@ -337,11 +317,12 @@ namespace Chess {
             return moves;
         };
 
-
+        // note! it is assumed that getPseudoLegalMoves has been called before this
         bool isWhiteCheck(Board& board) {
             Square* kingSquare = board.getWhiteKingSquare();
             std::vector<Move> moves = getPseudoLegalMoves(board);
             for (int i = 0; i < moves.size(); i++) {
+                // if kind is moving
                 if (moves[i].getX2() == kingSquare->getX() && moves[i].getY2() == kingSquare->getY()) {
                     return true;
                 }
@@ -350,10 +331,12 @@ namespace Chess {
             return false;
         };
 
+        // note! it is assumed that getPseudoLegalMoves has been called before this
         bool isBlackCheck(Board& board) {
             Square* kingSquare = board.getBlackKingSquare();
             std::vector<Move> moves = getPseudoLegalMoves(board);
             for (int i = 0; i < moves.size(); i++) {
+                // if kind is moving
                 if (moves[i].getX2() == kingSquare->getX() && moves[i].getY2() == kingSquare->getY()) {
                     return true;
                 }
@@ -366,17 +349,21 @@ namespace Chess {
             std::vector<Move> moves = getPseudoLegalMoves(board);
             std::vector<Move> legalMoves = {};
             for (int i = 0; i < moves.size(); i++) {
-                board.move(moves[i]);
+                Board newBoard;
+                newBoard.setPos(board.getSquares());
+                newBoard.setTurn(board.getTurn());
+                newBoard.setBlackKingSquare(board.getBlackKingSquare());
+                newBoard.setWhiteKingSquare(board.getWhiteKingSquare());
+                newBoard.move(moves[i]);
                 if (board.getTurn() == Color::WHITE) {
-                    if (!isWhiteCheck(board)) {
+                    if (!isWhiteCheck(newBoard)) {
                         legalMoves.push_back(moves[i]);
                     }
                 } else {
-                    if (!isBlackCheck(board)) {
+                    if (!isBlackCheck(newBoard)) {
                         legalMoves.push_back(moves[i]);
                     }
                 }
-                board.undo();
             }
             return legalMoves;
         };

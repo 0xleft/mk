@@ -1,4 +1,4 @@
 #pragma once
 
-#include "chess.h"
 #include "generator.h"
+#include "chess.h"
