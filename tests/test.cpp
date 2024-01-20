@@ -15,9 +15,13 @@ int perf(Chess::Board& board, int depth) {
     int count = 0;
     std::vector<Chess::Move> moves = Chess::Generator::getLegalMoves(board);
     for (Chess::Move move : moves) {
-        board.move(move);
-        count += perf(board, depth - 1);
-        board.undo();
+        Chess::Board newBoard;
+        newBoard.setPos(board.getSquares());
+        newBoard.setTurn(board.getTurn());
+        newBoard.setBlackKingSquare(board.getBlackKingSquare());
+        newBoard.setWhiteKingSquare(board.getWhiteKingSquare());
+        newBoard.move(move);
+        count += perf(newBoard, depth - 1);
     }
 
     return count;
