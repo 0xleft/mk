@@ -7,32 +7,38 @@
 #include <cheats.h>
 #include <chess/include.h>
 
+int perf(Chess::Board& board, int depth) {
+    if (depth == 0) {
+        return 1;
+    }
+
+    int count = 0;
+    std::vector<Chess::Move> moves = Chess::Generator::getLegalMoves(board);
+    for (Chess::Move move : moves) {
+        board.move(move);
+        count += perf(board, depth - 1);
+        board.undo();
+    }
+
+    return count;
+}
+
 int main() {
     // set random
     srand(time(NULL));
 
     Chess::Board board;
-
-    board.setFen("rnbqkbnr/8/8/8/p7/N7/7P/1K3qNR w - - 0 1");
-    std::vector<Chess::Move> moves = Chess::Generator::getPseudoLegalMoves(board);
-    std::cout << board.getFen() << std::endl;
-    std::cout << moves.size() << std::endl;
-
-    moves = Chess::Generator::getLegalMoves(board);
-    std::cout << "legal:" << moves.size() << std::endl;
-
-    // while (true) {
-    //     if (Chess::Generator::isEnd(board)) {
-	// 		break;
-	// 	}
-	// 	std::vector<Chess::Move> moves = Chess::Generator::getLegalMoves(board);
-    //     Chess::Move m = moves[0];
-    //     // std::cout << m.UCI() << std::endl;
-	// 	board.move(m);
-    //     std::cout << board.getFen() << std::endl;
-	// }
-
-    // std::cout << board.getFen() << std::endl;
+    std::cout << "Perft 1: " << perf(board, 1) << std::endl;
+    Chess::Board board2;
+    std::cout << "Perft 2: " << perf(board2, 2) << std::endl;
+    Chess::Board board3;
+    std::cout << "Perft 3: " << perf(board3, 3) << std::endl;
+    Chess::Board board4;
+    std::cout << "Perft 4: " << perf(board4, 4) << std::endl;
+    Chess::Board board5;
+    std::cout << "Perft 5: " << perf(board5, 5) << std::endl;
+    Chess::Board board6;
+    std::cout << "Perft 6: " << perf(board6, 6) << std::endl;
 
     return 0;
 }

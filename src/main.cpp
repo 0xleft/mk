@@ -11,13 +11,6 @@ int main(int argc, char* argv[]) {
 	EADK::Display::pushRectUniform(EADK::Screen::Rect, Black);
 
 	Chess::Board board;
-    std::vector<Chess::Move> moves = Chess::Generator::getLegalMoves(board);
-
-	while (true) {
-		std::vector<Chess::Move> moves = Chess::Generator::getLegalMoves(board);
-		Chess::Move m = moves[0];
-		board.move(m);
-	}
 
 	return 0;
 }
