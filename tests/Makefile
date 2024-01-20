@@ -17,7 +17,7 @@ OBJ = $(SRC:$(SRC_DIR)/%.cpp=$(BUILD_DIR)/%.o)
 TEST_OBJ = $(TEST_SRC:$(TEST_DIR)/%.cpp=$(BUILD_DIR)/%.o)
 
 # Compiler flags
-CPPFLAGS = -std=c++17 -fno-exceptions -Os -Wall -I../include -I$(SRC_DIR) -I$(SRC_DIR)/engine -I$(SRC_DIR)/chess
+CPPFLAGS = -std=c++17 -fno-exceptions -O3 -Wall -I../include -I$(SRC_DIR) -I$(SRC_DIR)/engine -I$(SRC_DIR)/chess
 
 # Linker flags
 LDFLAGS =

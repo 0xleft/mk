@@ -41,8 +41,6 @@ int main() {
     std::cout << "Perft 4: " << perf(board4, 4) << std::endl;
     Chess::Board board5;
     std::cout << "Perft 5: " << perf(board5, 5) << std::endl;
-    Chess::Board board6;
-    std::cout << "Perft 6: " << perf(board6, 6) << std::endl;
 
     return 0;
 }

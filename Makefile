@@ -21,7 +21,7 @@ src += $(addprefix src/engine/,\
 src += $(addprefix src/chess/,\
 )
 
-CPPFLAGS = -std=c++17 -fno-exceptions
+CPPFLAGS = -std=c++11 -fno-exceptions
 CPPFLAGS += -Os -Wall
 CPPFLAGS += $(shell $(NWLINK) eadk-cflags)
 CPPFLAGS += -Iinclude -Isrc -Isrc/engine -Isrc/chess
