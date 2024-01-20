@@ -19,6 +19,8 @@ src += $(addprefix src/engine/,\
 )
 
 src += $(addprefix src/chess/,\
+	generator.cpp \
+	chess.cpp \
 )
 
 CPPFLAGS = -std=c++17 -fno-exceptions

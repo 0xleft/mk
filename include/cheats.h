@@ -1,9 +1,8 @@
 #pragma once
 
 #include <cmath>
-#include <string>
 
-// nasty hacks to get around fucking linkers cuz embedded systems
+// some nastly bypasses to get around numworks linker
 
 namespace std {
 	void __throw_out_of_range_fmt(char const*, ...) {
@@ -11,9 +10,15 @@ namespace std {
 
     void __throw_length_error(char const*) {
     }
+
+	void __throw_bad_alloc() {
+	}
 }
 
-//ez cheat but still probably bad cuz we have like no memory
+void operator delete(void* ptr, unsigned int size) {
+	free(ptr);
+}
+
 void* operator new(size_t size) {
 	return malloc(size);
 }

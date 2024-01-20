@@ -5,6 +5,10 @@
 #include <display.h>
 #include <eadkpp.h>
 
+#ifdef CHESS_DEBUG
+#include <iostream>
+#endif
+
 namespace Chess {
     enum Piece { KING, QUEEN, BISHOP, KNIGHT, ROOK, PAWN, EMPTY };
     enum Color { WHITE, BLACK, NONE };
@@ -72,6 +76,8 @@ namespace Chess {
         std::vector<Square*> squares;
         Color turn = WHITE;
         Piece selectedPromotion = QUEEN;
+        Square* blackKingSquare;
+        Square* whiteKingSquare;
         // for en passant
         Move lastMove = Move(0, 0, 0, 0);
     public:
@@ -112,6 +118,9 @@ namespace Chess {
             getSquare(5, 7)->setPieceAndColor(BISHOP, BLACK);
             getSquare(6, 7)->setPieceAndColor(KNIGHT, BLACK);
             getSquare(7, 7)->setPieceAndColor(ROOK, BLACK);
+
+            blackKingSquare = getSquare(4, 7);
+            whiteKingSquare = getSquare(4, 0);
         }
 
         void setSelectedPromotion(Piece piece) {
@@ -121,12 +130,33 @@ namespace Chess {
             return this->selectedPromotion;
         }
 
+        Square* getBlackKingSquare() { return this->blackKingSquare; }
+        Square* getWhiteKingSquare() { return this->whiteKingSquare; }
+
         void move(Move move) {
             Square* square1 = getSquare(move.getX1(), move.getY1());
             Square* square2 = getSquare(move.getX2(), move.getY2());
+#ifdef CHESS_DEBUG
+            if (square1->getPiece() == KING) {
+                std::cout << "King moved" << std::endl;
+                this->printBoard();
+            }
+#endif
             square2->setPieceAndColor(square1->getPiece(), square1->getColor());
             square1->setEmpty();
             square2->setMoved(true);
+#ifdef CHESS_DEBUG
+            if (square2->getPiece() == KING) {
+                std::cout << "King moved" << std::endl;
+                this->printBoard();
+            }
+#endif
+            if (square1->getColor() == WHITE && square1->getPiece() == KING) {
+                whiteKingSquare = square2;
+            }
+            else if (square1->getColor() == BLACK && square1->getPiece() == KING) {
+                blackKingSquare = square2;
+            }
             // en passant
             if (square1->getPiece() == PAWN && abs(move.getY2() - move.getY1()) == 2) {
                 this->lastMove = move;
@@ -158,33 +188,39 @@ namespace Chess {
             }
         }
 
-        void moveBack() {
+        void undo() {
             Square* square1 = getSquare(lastMove.getX1(), lastMove.getY1());
             Square* square2 = getSquare(lastMove.getX2(), lastMove.getY2());
             square1->setPieceAndColor(square2->getPiece(), square2->getColor());
             square2->setEmpty();
             square1->setMoved(false);
+            if (square2->getColor() == WHITE && square2->getPiece() == KING) {
+                whiteKingSquare = square1;
+            }
+            else if (square2->getColor() == BLACK && square2->getPiece() == KING) {
+                blackKingSquare = square1;
+            }
             // en passant
-            if (square1->getPiece() == PAWN && abs(lastMove.getY2() - lastMove.getY1()) == 2) {
+            if (square2->getPiece() == PAWN && abs(lastMove.getY2() - lastMove.getY1()) == 2) {
                 this->lastMove = Move(0, 0, 0, 0);
             }
             else {
                 this->lastMove = Move(0, 0, 0, 0);
             }
             // castling
-            if (square1->getPiece() == KING && abs(lastMove.getX2() - lastMove.getX1()) == 2) {
+            if (square2->getPiece() == KING && abs(lastMove.getX2() - lastMove.getX1()) == 2) {
                 if (lastMove.getX2() == 2) {
-                    getSquare(0, lastMove.getY2())->setPieceAndColor(ROOK, square1->getColor());
+                    getSquare(0, lastMove.getY2())->setPieceAndColor(ROOK, square2->getColor());
                     getSquare(3, lastMove.getY2())->setPieceAndColor(EMPTY, NONE);
                 }
                 else if (lastMove.getX2() == 6) {
-                    getSquare(7, lastMove.getY2())->setPieceAndColor(ROOK, square1->getColor());
+                    getSquare(7, lastMove.getY2())->setPieceAndColor(ROOK, square2->getColor());
                     getSquare(5, lastMove.getY2())->setPieceAndColor(EMPTY, NONE);
                 }
             }
             // promotion
-            if (square1->getPiece() == PAWN && (lastMove.getY2() == 0 || lastMove.getY2() == 7)) {
-                square1->setPieceAndColor(PAWN, square1->getColor());
+            if (square2->getPiece() == PAWN && (lastMove.getY2() == 0 || lastMove.getY2() == 7)) {
+                square1->setPieceAndColor(PAWN, square2->getColor());
             }
             if (turn == WHITE) {
                 turn = BLACK;
@@ -204,5 +240,48 @@ namespace Chess {
                 delete squares[i];
             }
         }
+
+#ifdef CHESS_DEBUG
+        void printBoard() {
+            for (int y = 7; y >= 0; y--) {
+                for (int x = 0; x < 8; x++) {
+                    Square* square = getSquare(x, y);
+                    if (square->getPiece() == EMPTY) {
+                        std::cout << "  ";
+                    }
+                    else {
+                        if (square->getColor() == WHITE) {
+                            std::cout << "w";
+                        }
+                        else {
+                            std::cout << "b";
+                        }
+                        switch (square->getPiece()) {
+                        case KING:
+                            std::cout << "K";
+                            break;
+                        case QUEEN:
+                            std::cout << "Q";
+                            break;
+                        case BISHOP:
+                            std::cout << "B";
+                            break;
+                        case KNIGHT:
+                            std::cout << "N";
+                            break;
+                        case ROOK:
+                            std::cout << "R";
+                            break;
+                        case PAWN:
+                            std::cout << "P";
+                            break;
+                        }
+                    }
+                    std::cout << " ";
+                }
+                std::cout << std::endl;
+            }
+        }
+#endif
     };
 }
