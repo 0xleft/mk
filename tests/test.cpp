@@ -11,10 +11,7 @@
 int main() {
     // set random
     chess::Board board = chess::Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
-
-    chess::Movelist moves;
-    chess::movegen::legalmoves(moves, board);
-    std::cout << moves.size() << std::endl;
+    std::cout << chess::attacks::RookTable->attacks->count() << std::endl;
 
     return 0;
 }
