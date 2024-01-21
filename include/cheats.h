@@ -2,7 +2,24 @@
 
 #include <cmath>
 
+void _kill_r() {
+}
+
+void abort() {
+}
+
+void _getpid_r() {
+}
+
 // some nastly bypasses to get around numworks linker
+
+namespace __cxxabiv1 {
+	class __class_type_info {
+	public:
+		virtual ~__class_type_info();
+	};
+	__class_type_info::~__class_type_info() {}
+}
 
 namespace std {
 	void __throw_out_of_range_fmt(char const*, ...) {
@@ -12,7 +29,7 @@ namespace std {
     }
 
 	void __throw_bad_alloc() {
-		
+
 	}
 }
 

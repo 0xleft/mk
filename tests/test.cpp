@@ -6,15 +6,15 @@
 #include <vector>
 #include <cheats.h>
 #include <engine/evaluator.h>
+#include <chess/src/include.hpp>
 
 int main() {
     // set random
-    Chess::Board board;
-    while (!Chess::Generator::isEnd(board)) {
-        Chess::Move move = Evaluator::getBestMove(board);
-        board.move(move);
-        std::cout << board.getFen() << std::endl;
-    }
+    chess::Board board = chess::Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+
+    chess::Movelist moves;
+    chess::movegen::legalmoves(moves, board);
+    std::cout << moves.size() << std::endl;
 
     return 0;
 }
