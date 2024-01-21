@@ -20,29 +20,29 @@ class Move {
     /// @param pt
     /// @return
     template <std::uint16_t MoveType = 0>
-    static Move make(Square source, Square target, PieceType pt = PieceType::KNIGHT) noexcept {
+    [[nodiscard]] static Move make(Square source, Square target, PieceType pt = PieceType::KNIGHT) noexcept {
         return Move(MoveType + ((std::uint16_t(pt) - std::uint16_t(PieceType(PieceType::KNIGHT))) << 12) +
                     std::uint16_t(std::uint16_t(source.index()) << 6) + std::uint16_t(target.index()));
     }
 
     /// @brief Get the source square of the move.
     /// @return
-    Square from() const noexcept { return static_cast<Square>((move_ >> 6) & 0x3F); }
+    [[nodiscard]] Square from() const noexcept { return static_cast<Square>((move_ >> 6) & 0x3F); }
 
     /// @brief Get the target square of the move.
     /// @return
-    Square to() const noexcept { return static_cast<Square>(move_ & 0x3F); }
+    [[nodiscard]] Square to() const noexcept { return static_cast<Square>(move_ & 0x3F); }
 
     /// @brief Get the type of the move. Can be NORMAL, PROMOTION, ENPASSANT or CASTLING.
     /// @return
-    std::uint16_t typeOf() const noexcept {
+    [[nodiscard]] std::uint16_t typeOf() const noexcept {
         return static_cast<std::uint16_t>(move_ & (3 << 14));
     }
 
     /// @brief Get the promotion piece of the move, should only be used if typeOf() returns
     /// PROMOTION.
     /// @return
-    PieceType promotionType() const noexcept {
+    [[nodiscard]] PieceType promotionType() const noexcept {
         return static_cast<PieceType::underlying>(((move_ >> 12) & 3) + PieceType(PieceType::KNIGHT));
     }
 
@@ -50,8 +50,8 @@ class Move {
     /// @param score
     void setScore(std::int16_t score) noexcept { score_ = score; }
 
-    std::uint16_t move() const noexcept { return move_; }
-    std::int16_t score() const noexcept { return score_; }
+    [[nodiscard]] std::uint16_t move() const noexcept { return move_; }
+    [[nodiscard]] std::int16_t score() const noexcept { return score_; }
 
     bool operator==(const Move &rhs) const noexcept { return move_ == rhs.move_; }
     bool operator!=(const Move &rhs) const noexcept { return move_ != rhs.move_; }

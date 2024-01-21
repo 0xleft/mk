@@ -24,13 +24,13 @@ namespace attacks {
     /// @param sq
     /// @param occupied
     /// @return
-    static Bitboard bishopAttacks(Square sq, Bitboard occupied);
+    [[nodiscard]] static Bitboard bishopAttacks(Square sq, Bitboard occupied);
 
     /// @brief Slow function to calculate rook attacks
     /// @param sq
     /// @param occupied
     /// @return
-    static Bitboard rookAttacks(Square sq, Bitboard occupied);
+    [[nodiscard]] static Bitboard rookAttacks(Square sq, Bitboard occupied);
 
     /// @brief Initializes the magic bitboard tables for sliding pieces
     /// @param sq
@@ -151,6 +151,12 @@ namespace attacks {
         0xa010109502200ULL,    0x4a02012000ULL,       0x500201010098b028ULL, 0x8040002811040900ULL,
         0x28000010020204ULL,   0x6000020202d0240ULL,  0x8918844842082200ULL, 0x4010011029020020ULL};
 
+    Bitboard RookAttacks[0x19000];
+    Bitboard BishopAttacks[0x1480];
+
+    Magic RookTable[64];
+    Magic BishopTable[64];
+
     static Bitboard MASK_RANK[8] = {0xff,         0xff00,         0xff0000,         0xff000000,
                                               0xff00000000, 0xff0000000000, 0xff000000000000, 0xff00000000000000};
 
@@ -164,7 +170,7 @@ namespace attacks {
     /// @param b
     /// @return
     template <Direction direction>
-    static Bitboard shift(const Bitboard b);
+    [[nodiscard]] static Bitboard shift(const Bitboard b);
 
     /// @brief Generate the left side pawn attacks.
     /// @tparam c
@@ -172,54 +178,58 @@ namespace attacks {
     /// @param pawns
     /// @return
     template <Color::underlying c>
-    static Bitboard pawnLeftAttacks(const Bitboard pawns);
+    [[nodiscard]] static Bitboard pawnLeftAttacks(const Bitboard pawns);
 
     /// @brief Generate the right side pawn attacks.
     /// @tparam c
     /// @param pawns
     /// @return
     template <Color::underlying c>
-    static Bitboard pawnRightAttacks(const Bitboard pawns);
+    [[nodiscard]] static Bitboard pawnRightAttacks(const Bitboard pawns);
 
     /// @brief Returns the pawn attacks for a given color and square
     /// @param c
     /// @param sq
     /// @return
-    static Bitboard pawn(Color c, Square sq) noexcept;
+    [[nodiscard]] static Bitboard pawn(Color c, Square sq) noexcept;
 
     /// @brief Returns the knight attacks for a given square
     /// @param sq
     /// @return
-    static Bitboard knight(Square sq) noexcept;
+    [[nodiscard]] static Bitboard knight(Square sq) noexcept;
 
     /// @brief Returns the bishop attacks for a given square
     /// @param sq
     /// @param occupied
     /// @return
-    static Bitboard bishop(Square sq, Bitboard occupied) noexcept;
+    [[nodiscard]] static Bitboard bishop(Square sq, Bitboard occupied) noexcept;
 
     /// @brief Returns the rook attacks for a given square
     /// @param sq
     /// @param occupied
     /// @return
-    static Bitboard rook(Square sq, Bitboard occupied) noexcept;
+    [[nodiscard]] static Bitboard rook(Square sq, Bitboard occupied) noexcept;
 
     /// @brief Returns the queen attacks for a given square
     /// @param sq
     /// @param occupied
     /// @return
-    static Bitboard queen(Square sq, Bitboard occupied) noexcept;
+    [[nodiscard]] static Bitboard queen(Square sq, Bitboard occupied) noexcept;
 
     /// @brief Returns the king attacks for a given square
     /// @param sq
     /// @return
-    static Bitboard king(Square sq) noexcept;
+    [[nodiscard]] static Bitboard king(Square sq) noexcept;
 
     /// @brief Returns a bitboard with the origin squares of the attacking pieces set
     /// @param board
     /// @param color Attacker Color
     /// @param square Attacked Square
     /// @return
-    static Bitboard attackers(const Board &board, Color color, Square square) noexcept;
+    [[nodiscard]] static Bitboard attackers(const Board &board, Color color, Square square) noexcept;
+
+    /// @brief [Internal Usage] Initializes the attacks for the bishop and rook. Called once at
+    /// startup.
+    static void initAttacks();
 };
 }  // namespace chess

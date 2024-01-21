@@ -17,7 +17,7 @@ class File {
     File(underlying file) : file(file) {}
     File(int file) : file(static_cast<underlying>(file)) {}
 
-    underlying internal() const noexcept { return file; }
+    [[nodiscard]] underlying internal() const noexcept { return file; }
 
     bool operator==(const File& rhs) const noexcept { return file == rhs.file; }
     bool operator!=(const File& rhs) const noexcept { return file != rhs.file; }
@@ -65,7 +65,7 @@ class Rank {
     Rank(underlying rank) : rank(rank) {}
     Rank(int rank) : rank(static_cast<underlying>(rank)) {}
 
-    underlying internal() const noexcept { return rank; }
+    [[nodiscard]] underlying internal() const noexcept { return rank; }
 
     bool operator==(const Rank& rhs) const noexcept { return rank == rhs.rank; }
     bool operator!=(const Rank& rhs) const noexcept { return rank != rhs.rank; }
@@ -84,7 +84,7 @@ class Rank {
 
     operator int() const noexcept { return static_cast<int>(rank); }
 
-    static bool back_rank(Rank r, Color color) noexcept {
+    [[nodiscard]] static bool back_rank(Rank r, Color color) noexcept {
         if (color == Color::WHITE)
             return r == Rank::RANK_1;
         else
@@ -185,42 +185,42 @@ class Square {
         return tmp;
     }
 
-    operator std::string() const {
+    [[nodiscard]] operator std::string() const {
         std::string str;
         str += static_cast<std::string>(file());
         str += static_cast<std::string>(rank());
         return str;
     }
 
-    int index() const noexcept { return static_cast<int>(sq); }
+    [[nodiscard]] int index() const noexcept { return static_cast<int>(sq); }
 
-    File file() const noexcept { return File(index() & 7); }
-    Rank rank() const noexcept { return Rank(index() >> 3); }
+    [[nodiscard]] File file() const noexcept { return File(index() & 7); }
+    [[nodiscard]] Rank rank() const noexcept { return Rank(index() >> 3); }
 
-    bool is_light() const noexcept {
+    [[nodiscard]] bool is_light() const noexcept {
         return (static_cast<std::int8_t>(sq) / 8 + static_cast<std::int8_t>(sq) % 8) % 2 == 0;
     }
-    bool is_dark() const noexcept { return !is_light(); }
+    [[nodiscard]] bool is_dark() const noexcept { return !is_light(); }
 
-    bool is_valid() const noexcept { return static_cast<std::int8_t>(sq) < 64; }
+    [[nodiscard]] bool is_valid() const noexcept { return static_cast<std::int8_t>(sq) < 64; }
 
-    static bool is_valid(Rank r, File f) noexcept {
+    [[nodiscard]] static bool is_valid(Rank r, File f) noexcept {
         return r >= Rank::RANK_1 && r <= Rank::RANK_8 && f >= File::FILE_A && f <= File::FILE_H;
     }
 
-    static int distance(Square sq, Square sq2) noexcept {
+    [[nodiscard]] static int distance(Square sq, Square sq2) noexcept {
         return std::max(std::abs(sq.file() - sq2.file()), std::abs(sq.rank() - sq2.rank()));
     }
 
-    static int value_distance(Square sq, Square sq2) noexcept {
+    [[nodiscard]] static int value_distance(Square sq, Square sq2) noexcept {
         return std::abs(sq.index() - sq2.index());
     }
 
-    static bool same_color(Square sq, Square sq2) noexcept {
+    [[nodiscard]] static bool same_color(Square sq, Square sq2) noexcept {
         return ((9 * (sq ^ sq2).index()) & 8) == 0;
     }
 
-    static bool back_rank(Square sq, Color color) noexcept {
+    [[nodiscard]] static bool back_rank(Square sq, Color color) noexcept {
         if (color == Color::WHITE)
             return sq.rank() == Rank::RANK_1;
         else
@@ -236,15 +236,15 @@ class Square {
     /// @brief Conditionally flips the square vertically.
     /// @param c
     /// @return
-    Square relative_square(Color c) const noexcept {
+    [[nodiscard]] Square relative_square(Color c) const noexcept {
         return Square(static_cast<int>(sq) ^ (c * 56));
     }
 
-    int diagonal_of() const noexcept { return 7 + rank() - file(); }
+    [[nodiscard]] int diagonal_of() const noexcept { return 7 + rank() - file(); }
 
-    int antidiagonal_of() const noexcept { return rank() + file(); }
+    [[nodiscard]] int antidiagonal_of() const noexcept { return rank() + file(); }
 
-    Square ep_square() const noexcept {
+    [[nodiscard]] Square ep_square() const noexcept {
         assert(rank() == Rank::RANK_3     // capture
                || rank() == Rank::RANK_4  // push
                || rank() == Rank::RANK_5  // push
@@ -253,15 +253,15 @@ class Square {
         return Square(static_cast<int>(sq) ^ 8);
     }
 
-    static Square castling_king_square(bool is_king_side, Color c) noexcept {
+    [[nodiscard]] static Square castling_king_square(bool is_king_side, Color c) noexcept {
         return Square(is_king_side ? Square::underlying::SQ_G1 : Square::underlying::SQ_C1).relative_square(c);
     }
 
-    static Square castling_rook_square(bool is_king_side, Color c) noexcept {
+    [[nodiscard]] static Square castling_rook_square(bool is_king_side, Color c) noexcept {
         return Square(is_king_side ? Square::underlying::SQ_F1 : Square::underlying::SQ_D1).relative_square(c);
     }
 
-    static int max() noexcept { return 64; }
+    [[nodiscard]] static int max() noexcept { return 64; }
 
    private:
     underlying sq;

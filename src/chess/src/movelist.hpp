@@ -20,7 +20,7 @@ class Movelist {
     /// otherwise -1.
     /// @param move
     /// @return
-    int find(Move move) const noexcept {
+    [[nodiscard]] int find(Move move) const noexcept {
         for (int i = 0; i < size_; ++i) {
             if (moves_[i] == move) {
                 return i;
@@ -32,17 +32,17 @@ class Movelist {
 
     /// @brief Return the number of moves in the movelist.
     /// @return
-    int size() const noexcept { return size_; }
+    [[nodiscard]] int size() const noexcept { return size_; }
 
     /// @brief Checks if the movelist is empty.
     /// @return
-    bool empty() const noexcept { return size_ == 0; }
+    [[nodiscard]] bool empty() const noexcept { return size_ == 0; }
 
     /// @brief Clears the movelist.
     void clear() noexcept { size_ = 0; }
 
-    Move operator[](int index) const noexcept { return moves_[index]; }
-    Move &operator[](int index) noexcept { return moves_[index]; }
+    [[nodiscard]] Move operator[](int index) const noexcept { return moves_[index]; }
+    [[nodiscard]] Move &operator[](int index) noexcept { return moves_[index]; }
 
     using iterator       = Move *;
     using const_iterator = const Move *;
@@ -50,8 +50,8 @@ class Movelist {
     iterator begin() { return moves_; }
     iterator end() { return moves_ + size_; }
 
-    const_iterator begin() const noexcept { return moves_; }
-    const_iterator end() const noexcept { return moves_ + size_; }
+    [[nodiscard]] const_iterator begin() const noexcept { return moves_; }
+    [[nodiscard]] const_iterator end() const noexcept { return moves_ + size_; }
 
    private:
     Move moves_[constants::MAX_MOVES];

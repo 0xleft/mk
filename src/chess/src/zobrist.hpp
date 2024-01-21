@@ -191,26 +191,26 @@ namespace Zobrist {
     /// @param piece
     /// @param square
     /// @return
-    static U64 piece(Piece piece, Square square) noexcept {
+    [[nodiscard]] static U64 piece(Piece piece, Square square) noexcept {
         return RANDOM_ARRAY[64 * MAP_HASH_PIECE[piece] + square.index()];
     }
 
     /// @brief [Internal Usage]
     /// @param file
     /// @return
-    static U64 enpassant(File file) noexcept { return RANDOM_ARRAY[772 + file]; }
+    [[nodiscard]] static U64 enpassant(File file) noexcept { return RANDOM_ARRAY[772 + file]; }
 
     /// @brief [Internal Usage]
     /// @param castling
     /// @return
-    static U64 castling(int castling) noexcept { return castlingKey[castling]; }
+    [[nodiscard]] static U64 castling(int castling) noexcept { return castlingKey[castling]; }
 
     /// @brief [Internal Usage]
     /// @param idx
     /// @return
-    static U64 castlingIndex(int idx) noexcept { return RANDOM_ARRAY[768 + idx]; }
+    [[nodiscard]] static U64 castlingIndex(int idx) noexcept { return RANDOM_ARRAY[768 + idx]; }
 
-    static U64 sideToMove() noexcept { return RANDOM_ARRAY[780]; }
+    [[nodiscard]] static U64 sideToMove() noexcept { return RANDOM_ARRAY[780]; }
 };
 
 }  // namespace chess

@@ -19,12 +19,6 @@ namespace __cxxabiv1 {
 		virtual ~__class_type_info();
 	};
 	__class_type_info::~__class_type_info() {}
-
-	class ___function_type_info {
-	public:
-		virtual ~___function_type_info();
-	};
-	___function_type_info::~___function_type_info() {}
 }
 
 namespace std {

@@ -7,6 +7,7 @@
 #include <string>
 #include <bitset>
 #include <algorithm>
+#include <iostream>
 #include <cassert>
 
 #if defined(_MSC_VER)
@@ -85,7 +86,7 @@ class Bitboard {
         return *this;
     }
 
-    bool check(int index) const noexcept {
+    [[nodiscard]] bool check(int index) const noexcept {
         assert(index >= 0 && index < 64);
         return bits & (1ULL << index);
     }
@@ -101,17 +102,17 @@ class Bitboard {
         return *this;
     }
 
-    static Bitboard fromSquare(int index) noexcept {
+    [[nodiscard]] static Bitboard fromSquare(int index) noexcept {
         assert(index >= 0 && index < 64);
         return Bitboard(1ULL << index);
     }
 
-    static Bitboard fromSquare(Square sq) noexcept {
+    [[nodiscard]] static Bitboard fromSquare(Square sq) noexcept {
         assert(sq.index() >= 0 && sq.index() < 64);
         return Bitboard(1ULL << sq.index());
     }
 
-    bool empty() const noexcept { return bits == 0; }
+    [[nodiscard]] bool empty() const noexcept { return bits == 0; }
 
     [[nodiscard]]
 #if !defined(_MSC_VER)
@@ -183,11 +184,18 @@ class Bitboard {
         return index;
     }
 
-    std::uint64_t getBits() const noexcept { return bits; }
+    [[nodiscard]] std::uint64_t getBits() const noexcept { return bits; }
+
+    friend std::ostream& operator<<(std::ostream& os, const Bitboard& bb);
 
    private:
     std::uint64_t bits;
 };
+
+inline std::ostream& operator<<(std::ostream& os, const Bitboard& bb) {
+    os << std::string(bb);
+    return os;
+}
 
 Bitboard operator&(std::uint64_t lhs, const Bitboard& rhs) { return rhs & lhs; }
 Bitboard operator|(std::uint64_t lhs, const Bitboard& rhs) { return rhs | lhs; }
