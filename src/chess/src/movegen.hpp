@@ -42,7 +42,7 @@ static std::array<std::array<Bitboard, 64>, 64> init_squares_between() {
 /// @param double_check
 /// @return
 template <Color::underlying c>
-[[nodiscard]] static Bitboard checkMask(const Board &board, Square sq, int &double_check) {
+static Bitboard checkMask(const Board &board, Square sq, int &double_check) {
     double_check = 0;
 
     const auto opp_knight = board.pieces(PieceType::KNIGHT, ~c);
@@ -65,6 +65,8 @@ template <Color::underlying c>
 
     // check for bishop checks
     Bitboard bishop_attacks = attacks::bishop(sq, board.occ()) & (opp_bishop | opp_queen);
+
+    return mask;
 
     if (bishop_attacks) {
         const auto index = bishop_attacks.lsb();
@@ -102,7 +104,7 @@ template <Color::underlying c>
 /// @param occ_us
 /// @return
 template <Color::underlying c>
-[[nodiscard]] static Bitboard pinMaskRooks(const Board &board, Square sq, Bitboard occ_opp, Bitboard occ_us) {
+static Bitboard pinMaskRooks(const Board &board, Square sq, Bitboard occ_opp, Bitboard occ_us) {
     const auto opp_rook  = board.pieces(PieceType::ROOK, ~c);
     const auto opp_queen = board.pieces(PieceType::QUEEN, ~c);
 
@@ -128,7 +130,7 @@ template <Color::underlying c>
 /// @param occ_us
 /// @return
 template <Color::underlying c>
-[[nodiscard]] static Bitboard pinMaskBishops(const Board &board, Square sq, Bitboard occ_opp,
+static Bitboard pinMaskBishops(const Board &board, Square sq, Bitboard occ_opp,
                                                       Bitboard occ_us) {
     const auto opp_bishop = board.pieces(PieceType::BISHOP, ~c);
     const auto opp_queen  = board.pieces(PieceType::QUEEN, ~c);
@@ -152,7 +154,7 @@ template <Color::underlying c>
 /// @param enemy_empty
 /// @return
 template <Color::underlying c>
-[[nodiscard]] static Bitboard seenSquares(const Board &board, Bitboard enemy_empty) {
+static Bitboard seenSquares(const Board &board, Bitboard enemy_empty) {
     auto king_sq          = board.kingSq(~c);
     Bitboard map_king_atk = attacks::king(king_sq) & enemy_empty;
 
@@ -361,7 +363,7 @@ static void generatePawnMoves(const Board &board, Movelist &moves, Bitboard pin_
 /// @param sq
 /// @param movable
 /// @return
-[[nodiscard]] static Bitboard generateKnightMoves(Square sq) { return attacks::knight(sq); }
+static Bitboard generateKnightMoves(Square sq) { return attacks::knight(sq); }
 
 /// @brief Generate bishop moves.
 /// @param sq
@@ -369,7 +371,7 @@ static void generatePawnMoves(const Board &board, Movelist &moves, Bitboard pin_
 /// @param pin_d
 /// @param occ_all
 /// @return
-[[nodiscard]] static Bitboard generateBishopMoves(Square sq, Bitboard pin_d, Bitboard occ_all) {
+static Bitboard generateBishopMoves(Square sq, Bitboard pin_d, Bitboard occ_all) {
     // The Bishop is pinned diagonally thus can only move diagonally.
     if (pin_d & Bitboard::fromSquare(sq)) return attacks::bishop(sq, occ_all) & pin_d;
     return attacks::bishop(sq, occ_all);
@@ -381,7 +383,7 @@ static void generatePawnMoves(const Board &board, Movelist &moves, Bitboard pin_
 /// @param pin_hv
 /// @param occ_all
 /// @return
-[[nodiscard]] static Bitboard generateRookMoves(Square sq, Bitboard pin_hv, Bitboard occ_all) {
+static Bitboard generateRookMoves(Square sq, Bitboard pin_hv, Bitboard occ_all) {
     // The Rook is pinned horizontally thus can only move horizontally.
     if (pin_hv & Bitboard::fromSquare(sq)) return attacks::rook(sq, occ_all) & pin_hv;
     return attacks::rook(sq, occ_all);
@@ -394,7 +396,7 @@ static void generatePawnMoves(const Board &board, Movelist &moves, Bitboard pin_
 /// @param pin_hv
 /// @param occ_all
 /// @return
-[[nodiscard]] static Bitboard generateQueenMoves(Square sq, Bitboard pin_d, Bitboard pin_hv,
+static Bitboard generateQueenMoves(Square sq, Bitboard pin_d, Bitboard pin_hv,
                                                           Bitboard occ_all) {
     Bitboard moves = 0ULL;
 
@@ -415,7 +417,7 @@ static void generatePawnMoves(const Board &board, Movelist &moves, Bitboard pin_
 /// @param seen
 /// @param movable_square
 /// @return
-[[nodiscard]] static Bitboard generateKingMoves(Square sq, Bitboard seen, Bitboard movable_square) {
+static Bitboard generateKingMoves(Square sq, Bitboard seen, Bitboard movable_square) {
     return attacks::king(sq) & movable_square & ~seen;
 }
 
@@ -428,7 +430,7 @@ static void generatePawnMoves(const Board &board, Movelist &moves, Bitboard pin_
 /// @param pin_hv
 /// @return
 template <Color::underlying c, movegen::MoveGenType mt>
-[[nodiscard]] static Bitboard generateCastleMoves(const Board &board, Square sq, Bitboard seen,
+static Bitboard generateCastleMoves(const Board &board, Square sq, Bitboard seen,
                                                            Bitboard pin_hv) {
     if (mt == movegen::MoveGenType::CAPTURE) return 0ull;
     const auto rights = board.castlingRights();
@@ -497,6 +499,9 @@ static void legalmoves(Movelist &movelist, const Board &board, int pieces) noexc
     Bitboard opp_empty = ~occ_us;
 
     Bitboard check_mask = checkMask<c>(board, king_sq, double_check);
+
+    return;
+
     Bitboard pin_hv     = pinMaskRooks<c>(board, king_sq, occ_opp, occ_us);
     Bitboard pin_d      = pinMaskBishops<c>(board, king_sq, occ_opp, occ_us);
 

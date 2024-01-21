@@ -12,7 +12,7 @@ namespace utils {
 /// @param string
 /// @param delimiter
 /// @return
-[[nodiscard]] static std::vector<bpstd::string_view> splitString(bpstd::string_view string, const char &delimiter) {
+static std::vector<bpstd::string_view> splitString(bpstd::string_view string, const char &delimiter) {
     std::vector<bpstd::string_view> result;
     size_t start = 0;
     size_t end   = string.find(delimiter);

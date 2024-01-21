@@ -90,7 +90,7 @@ class PieceType {
 
     operator int() const noexcept { return static_cast<int>(pt); }
 
-    [[nodiscard]] underlying internal() const noexcept { return pt; }
+    underlying internal() const noexcept { return pt; }
 
     const static underlying PAWN   = underlying::PAWN;
     const static underlying KNIGHT = underlying::KNIGHT;
@@ -227,18 +227,18 @@ class Piece {
 
     operator int() const noexcept { return static_cast<int>(piece); }
 
-    [[nodiscard]] PieceType type() const noexcept {
+    PieceType type() const noexcept {
         return static_cast<PieceType::underlying>(int(piece) % 6);
     }
 
-    [[nodiscard]] Color color() const noexcept {
+    Color color() const noexcept {
         if (piece == NONE) {
             return Color::NONE;
         }
         return static_cast<Color>(static_cast<int>(piece) / 6);
     }
 
-    [[nodiscard]] underlying internal() const noexcept { return piece; }
+    underlying internal() const noexcept { return piece; }
 
     const static underlying NONE        = underlying::NONE;
     const static underlying WHITEPAWN   = underlying::WHITEPAWN;

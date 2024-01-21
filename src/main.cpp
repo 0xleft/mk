@@ -12,6 +12,8 @@ int main(int argc, char* argv[]) {
 	EADK::Display::pushRectUniform(EADK::Screen::Rect, Black);
 
 	chess::Board board = chess::Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+	chess::attackpatterns::init();
+    // chess::attacks::initAttacks();
 
     chess::Movelist moves;
     chess::movegen::legalmoves(moves, board);

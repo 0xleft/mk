@@ -45,7 +45,7 @@ namespace movegen {
     /// @param double_check
     /// @return
     template <Color::underlying c>
-    [[nodiscard]] static Bitboard checkMask(const Board &board, Square sq, int &double_check);
+    static Bitboard checkMask(const Board &board, Square sq, int &double_check);
 
     /// @brief Generate the pin mask for horizontal and vertical pins.
     /// Returns a bitboard where the ray between the king and the pinner is set.
@@ -56,7 +56,7 @@ namespace movegen {
     /// @param occ_us
     /// @return
     template <Color::underlying c>
-    [[nodiscard]] static Bitboard pinMaskRooks(const Board &board, Square sq, Bitboard occ_enemy, Bitboard occ_us);
+    static Bitboard pinMaskRooks(const Board &board, Square sq, Bitboard occ_enemy, Bitboard occ_us);
 
     /// @brief Generate the pin mask for diagonal pins.
     /// Returns a bitboard where the ray between the king and the pinner is set.
@@ -67,7 +67,7 @@ namespace movegen {
     /// @param occ_us
     /// @return
     template <Color::underlying c>
-    [[nodiscard]] static Bitboard pinMaskBishops(const Board &board, Square sq, Bitboard occ_enemy, Bitboard occ_us);
+    static Bitboard pinMaskBishops(const Board &board, Square sq, Bitboard occ_enemy, Bitboard occ_us);
 
     /// @brief Returns the squares that are attacked by the enemy
     /// @tparam c
@@ -75,7 +75,7 @@ namespace movegen {
     /// @param enemy_empty
     /// @return
     template <Color::underlying c>
-    [[nodiscard]] static Bitboard seenSquares(const Board &board, Bitboard enemy_empty);
+    static Bitboard seenSquares(const Board &board, Bitboard enemy_empty);
 
     /// @brief Generate pawn moves.
     /// @tparam c
@@ -94,7 +94,7 @@ namespace movegen {
     /// @param sq
     /// @param movable
     /// @return
-    [[nodiscard]] static Bitboard generateKnightMoves(Square sq);
+    static Bitboard generateKnightMoves(Square sq);
 
     /// @brief Generate bishop moves.
     /// @param sq
@@ -102,7 +102,7 @@ namespace movegen {
     /// @param pin_d
     /// @param occ_all
     /// @return
-    [[nodiscard]] static Bitboard generateBishopMoves(Square sq, Bitboard pin_d, Bitboard occ_all);
+    static Bitboard generateBishopMoves(Square sq, Bitboard pin_d, Bitboard occ_all);
 
     /// @brief Generate rook moves.
     /// @param sq
@@ -110,7 +110,7 @@ namespace movegen {
     /// @param pin_hv
     /// @param occ_all
     /// @return
-    [[nodiscard]] static Bitboard generateRookMoves(Square sq, Bitboard pin_hv, Bitboard occ_all);
+    static Bitboard generateRookMoves(Square sq, Bitboard pin_hv, Bitboard occ_all);
 
     /// @brief Generate queen moves.
     /// @param sq
@@ -119,13 +119,13 @@ namespace movegen {
     /// @param pin_hv
     /// @param occ_all
     /// @return
-    [[nodiscard]] static Bitboard generateQueenMoves(Square sq, Bitboard pin_d, Bitboard pin_hv, Bitboard occ_all);
+    static Bitboard generateQueenMoves(Square sq, Bitboard pin_d, Bitboard pin_hv, Bitboard occ_all);
     /// @brief Generate king moves.
     /// @param sq
     /// @param seen
     /// @param movable_square
     /// @return
-    [[nodiscard]] static Bitboard generateKingMoves(Square sq, Bitboard seen, Bitboard movable_square);
+    static Bitboard generateKingMoves(Square sq, Bitboard seen, Bitboard movable_square);
 
     /// @brief Generate castling moves.
     /// @tparam c
@@ -136,7 +136,7 @@ namespace movegen {
     /// @param pinHV
     /// @return
     template <Color::underlying c, chess::movegen::MoveGenType mt>
-    [[nodiscard]] static Bitboard generateCastleMoves(const Board &board, Square sq, Bitboard seen, Bitboard pinHV);
+    static Bitboard generateCastleMoves(const Board &board, Square sq, Bitboard seen, Bitboard pinHV);
 
     template <typename T>
     static void whileBitboardAdd(Movelist &movelist, Bitboard mask, std::function<T> func);

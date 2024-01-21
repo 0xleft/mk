@@ -11,6 +11,35 @@
 #include "piece.hpp"
 
 namespace chess {
+    
+}
+
+namespace chess {
+    class attackpatterns {
+        private:
+            static void initAttacks() {
+                BishopTable[0].attacks = BishopAttacks;
+                RookTable[0].attacks   = RookAttacks;
+
+                for (int i = 0; i < 64; i++) {
+                    initSliders(static_cast<Square>(i), BishopTable, chess::attacks::BishopMagics[i], chess::attacks::bishopAttacks);
+                    initSliders(static_cast<Square>(i), RookTable, chess::attacks::RookMagics[i], chess::attacks::rookAttacks);
+                }
+            }
+
+        public:
+            static Bitboard RookAttacks[0x19000];
+            static Bitboard BishopAttacks[0x1480];
+
+            static chess::attacks::Magic RookTable[64];
+            static chess::attacks::Magic BishopTable[64];
+
+            // init attacks
+            static void init() {
+                initAttacks();
+            }
+    };
+
 namespace attacks {
 
 /// @brief Shifts a bitboard in a given direction
@@ -44,7 +73,7 @@ static Bitboard shift(const Bitboard b) {
 /// @param pawns
 /// @return
 template <Color::underlying c>
-[[nodiscard]] static Bitboard pawnLeftAttacks(const Bitboard pawns) {
+static Bitboard pawnLeftAttacks(const Bitboard pawns) {
     return c == Color::WHITE ? (pawns << 7) & ~MASK_FILE[static_cast<int>(File::FILE_H)]
                              : (pawns >> 7) & ~MASK_FILE[static_cast<int>(File::FILE_A)];
 }
@@ -54,7 +83,7 @@ template <Color::underlying c>
 /// @param pawns
 /// @return
 template <Color::underlying c>
-[[nodiscard]] static Bitboard pawnRightAttacks(const Bitboard pawns) {
+static Bitboard pawnRightAttacks(const Bitboard pawns) {
     return c == Color::WHITE ? (pawns << 9) & ~MASK_FILE[static_cast<int>(File::FILE_A)]
                              : (pawns >> 9) & ~MASK_FILE[static_cast<int>(File::FILE_H)];
 }
@@ -63,48 +92,48 @@ template <Color::underlying c>
 /// @param c
 /// @param sq
 /// @return
-[[nodiscard]] static Bitboard pawn(Color c, Square sq) noexcept { return PawnAttacks[c][sq.index()]; }
+static Bitboard pawn(Color c, Square sq) noexcept { return PawnAttacks[c][sq.index()]; }
 
 /// @brief Returns the knight attacks for a given square
 /// @param sq
 /// @return
-[[nodiscard]] static Bitboard knight(Square sq) noexcept { return KnightAttacks[sq.index()]; }
+static Bitboard knight(Square sq) noexcept { return KnightAttacks[sq.index()]; }
 
 /// @brief Returns the bishop attacks for a given square
 /// @param sq
 /// @param occupied
 /// @return
-[[nodiscard]] static Bitboard bishop(Square sq, Bitboard occupied) noexcept {
-    return BishopTable[sq.index()].attacks[BishopTable[sq.index()](occupied)];
+static Bitboard bishop(Square sq, Bitboard occupied) noexcept {
+    return attackpatterns::BishopTable[sq.index()].attacks[attackpatterns::BishopTable[sq.index()](occupied)];
 }
 
 /// @brief Returns the rook attacks for a given square
 /// @param sq
 /// @param occupied
 /// @return
-[[nodiscard]] static Bitboard rook(Square sq, Bitboard occupied) noexcept {
-    return RookTable[sq.index()].attacks[RookTable[sq.index()](occupied)];
+static Bitboard rook(Square sq, Bitboard occupied) noexcept {
+    return attackpatterns::RookTable[sq.index()].attacks[attackpatterns::RookTable[sq.index()](occupied)];
 }
 
 /// @brief Returns the queen attacks for a given square
 /// @param sq
 /// @param occupied
 /// @return
-[[nodiscard]] static Bitboard queen(Square sq, Bitboard occupied) noexcept {
+static Bitboard queen(Square sq, Bitboard occupied) noexcept {
     return bishop(sq, occupied) | rook(sq, occupied);
 }
 
 /// @brief Returns the king attacks for a given square
 /// @param sq
 /// @return
-[[nodiscard]] static Bitboard king(Square sq) noexcept { return KingAttacks[sq.index()]; }
+static Bitboard king(Square sq) noexcept { return KingAttacks[sq.index()]; }
 
 /// @brief Returns a bitboard with the origin squares of the attacking pieces set
 /// @param board
 /// @param color Attacker Color
 /// @param square Attacked Square
 /// @return
-[[nodiscard]] static Bitboard attackers(const Board &board, Color color, Square square) noexcept {
+static Bitboard attackers(const Board &board, Color color, Square square) noexcept {
     const auto queens   = board.pieces(PieceType::QUEEN, color);
     const auto occupied = board.occ();
 
@@ -122,7 +151,7 @@ template <Color::underlying c>
 /// @param sq
 /// @param occupied
 /// @return
-[[nodiscard]] static Bitboard bishopAttacks(Square sq, Bitboard occupied) {
+static Bitboard bishopAttacks(Square sq, Bitboard occupied) {
     Bitboard attacks = 0ULL;
 
     int r, f;
@@ -161,7 +190,7 @@ template <Color::underlying c>
 /// @param sq
 /// @param occupied
 /// @return
-[[nodiscard]] static Bitboard rookAttacks(Square sq, Bitboard occupied) {
+static Bitboard rookAttacks(Square sq, Bitboard occupied) {
     Bitboard attacks = 0ULL;
 
     int r, f;
@@ -226,22 +255,5 @@ static void initSliders(Square sq, Magic table[], U64 magic,
     } while (occ);
 }
 
-/// @brief [Internal Usage] Initializes the attacks for the bishop and rook. Called once at
-/// startup.
-static void initAttacks() {
-    BishopTable[0].attacks = BishopAttacks;
-    RookTable[0].attacks   = RookAttacks;
-
-    for (int i = 0; i < 64; i++) {
-        initSliders(static_cast<Square>(i), BishopTable, BishopMagics[i], bishopAttacks);
-        initSliders(static_cast<Square>(i), RookTable, RookMagics[i], rookAttacks);
-    }
-}
-
-static auto init = []() {
-    initAttacks();
-    return 0;
-}();
-
 }  // namespace attacks
-}  // namespace chess
+}
