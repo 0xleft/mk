@@ -3,6 +3,7 @@
 #include "chess.h"
 
 // there are probably a lot of missing moves here so if you down to improve this, please do
+// todo rewrite this to use bitboards
 
 namespace Chess {
     namespace Generator {

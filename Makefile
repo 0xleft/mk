@@ -15,7 +15,6 @@ src = $(addprefix src/,\
 )
 
 src += $(addprefix src/engine/,\
-	evaluator.cpp \
 )
 
 src += $(addprefix src/chess/,\

@@ -4,7 +4,6 @@
 #include <vector>
 #include <display.h>
 #include <eadkpp.h>
-#include <str.h>
 
 #ifdef CHESS_DEBUG
 #include <iostream>
@@ -38,6 +37,20 @@ namespace Chess {
                 return EMPTY;
             }
         };
+
+        static char tolower(char c) {
+            if (c >= 'A' && c <= 'Z') {
+                return c - 'A' + 'a';
+            }
+            return c;
+        }
+
+        static char toupper(char c) {
+            if (c >= 'a' && c <= 'z') {
+                return c - 'a' + 'A';
+            }
+            return c;
+        }
 
         static Color getColor(char c) {
             if (c >= 'A' && c <= 'Z') {
@@ -127,6 +140,11 @@ namespace Chess {
         int x2, y2;
         bool isCastle = false;
         bool isCapture = false;
+        bool isEnPassant = false;
+        bool isPromotion = false;
+        Piece promotionPiece = QUEEN;
+        Piece capturedPiece = EMPTY;
+        Color capturedColor = NONE;
     public:
         Move(int x1, int y1, int x2, int y2) {
             this->x1 = x1; this->y1 = y1;
@@ -143,6 +161,11 @@ namespace Chess {
         int getY2() { return this->y2; }
         bool getIsCastle() { return this->isCastle; }
         bool getIsCapture() { return this->isCapture; }
+        bool getIsEnPassant() { return this->isEnPassant; }
+        bool getIsPromotion() { return this->isPromotion; }
+        Piece getPromotionPiece() { return this->promotionPiece; }
+        Piece getCapturedPiece() { return this->capturedPiece; }
+        Color getCapturedColor() { return this->capturedColor; }
 
         void setX1(int x1) { this->x1 = x1; }
         void setY1(int y1) { this->y1 = y1; }
@@ -150,6 +173,11 @@ namespace Chess {
         void setY2(int y2) { this->y2 = y2; }
         void setIsCastle(bool isCastle) { this->isCastle = isCastle; }
         void setIsCapture(bool isCapture) { this->isCapture = isCapture; }
+        void setIsEnPassant(bool isEnPassant) { this->isEnPassant = isEnPassant; }
+        void setIsPromotion(bool isPromotion) { this->isPromotion = isPromotion; }
+        void setPromotionPiece(Piece promotionPiece) { this->promotionPiece = promotionPiece; }
+        void setCapturedPiece(Piece capturedPiece) { this->capturedPiece = capturedPiece; }
+        void setCapturedColor(Color capturedColor) { this->capturedColor = capturedColor; }
 #ifdef CHESS_DEBUG
         std::string UCI() {
             std::string uci = "";
@@ -173,6 +201,9 @@ namespace Chess {
         Move lastMove = Move(0, 0, 0, 0);
         std::vector<Move> doneMoves;
     public:
+        Square* getSquare(int i) {
+            return this->squares[i];
+        }
         Square* getSquare(int x, int y) {
             return this->squares[x + y * 8];
         }
@@ -234,9 +265,33 @@ namespace Chess {
         Square* getBlackKingSquare() { return this->blackKingSquare; }
         Square* getWhiteKingSquare() { return this->whiteKingSquare; }
 
+        std::vector<Move> getDoneMoves() {
+            return this->doneMoves;
+        }
+        void setDoneMoves(std::vector<Move> doneMoves) {
+            this->doneMoves = doneMoves;
+        }
+
+        static Board copyBoard(Board& board) {
+            Board newBoard;
+            newBoard.setPos(board.getSquares());
+            newBoard.setTurn(board.getTurn());
+            newBoard.setBlackKingSquare(board.getBlackKingSquare());
+            newBoard.setWhiteKingSquare(board.getWhiteKingSquare());
+            newBoard.setLastMove(board.getLastMove());
+            newBoard.setDoneMoves(board.getDoneMoves());
+            return newBoard;
+        }
+
         void move(Move move) {
             Square* square1 = getSquare(move.getX1(), move.getY1());
             Square* square2 = getSquare(move.getX2(), move.getY2());
+            // check capture
+            if (!square2->isEmpty()) {
+                move.setIsCapture(true);
+                move.setCapturedPiece(square2->getPiece());
+                move.setCapturedColor(square2->getColor());
+            }
             square2->setPieceAndColor(square1->getPiece(), square1->getColor());
             square1->setEmpty();
             square2->setMoved(true);
@@ -271,6 +326,8 @@ namespace Chess {
             // promotion
             if (square2->getPiece() == PAWN && (square2->getY() == 0 || square2->getY() == 7)) {
                 square2->setPieceAndColor(this->selectedPromotion, square2->getColor());
+                move.setIsPromotion(true);
+                move.setPromotionPiece(this->selectedPromotion);
             }
             if (turn == WHITE) {
                 turn = BLACK;
@@ -293,56 +350,55 @@ namespace Chess {
             doneMoves.push_back(move);
         }
 
+        // doesnt work
         void undo() {
+            if (doneMoves.empty()) {
+                return; // No moves to undo
+            }
+
             Move move = doneMoves.back();
             doneMoves.pop_back();
             Square* square1 = getSquare(move.getX1(), move.getY1());
             Square* square2 = getSquare(move.getX2(), move.getY2());
+
+            // Revert the move
             square1->setPieceAndColor(square2->getPiece(), square2->getColor());
             square2->setEmpty();
-            square1->setMoved(false);
-            // en passant
-            if (move.getIsCapture() && square1->getPiece() == PAWN && this->lastMove.getX2() == move.getX2() && this->lastMove.getY2() == move.getY2()) {
-                if (square1->getColor() == WHITE) {
-                    getSquare(move.getX2(), move.getY2() - 1)->setPieceAndColor(PAWN, BLACK);
-                }
-                else {
-                    getSquare(move.getX2(), move.getY2() + 1)->setPieceAndColor(PAWN, WHITE);
+
+            // Revert capture
+            if (move.getIsCapture()) {
+                if (move.getIsEnPassant()) {
+                    Square* capturedSquare;
+                    if (square1->getColor() == WHITE) {
+                        capturedSquare = getSquare(move.getX2(), move.getY2() - 1);
+                    } else {
+                        capturedSquare = getSquare(move.getX2(), move.getY2() + 1);
+                    }
+                    capturedSquare->setPieceAndColor(PAWN, square1->getColor());
+                } else {
+                    getSquare(move.getX2(), move.getY2())->setPieceAndColor(move.getCapturedPiece(), move.getCapturedColor());
                 }
             }
-            // castling
+
+            // Revert castling
             if (move.getIsCastle()) {
                 if (move.getX2() == 2) {
                     getSquare(0, move.getY2())->setPieceAndColor(ROOK, square1->getColor());
-                    getSquare(3, move.getY2())->setPieceAndColor(EMPTY, NONE);
-                }
-                else if (move.getX2() == 6) {
+                    getSquare(3, move.getY2())->setEmpty();
+                } else if (move.getX2() == 6) {
                     getSquare(7, move.getY2())->setPieceAndColor(ROOK, square1->getColor());
-                    getSquare(5, move.getY2())->setPieceAndColor(EMPTY, NONE);
+                    getSquare(5, move.getY2())->setEmpty();
                 }
             }
-            // promotion
-            if (square1->getPiece() == PAWN && (square1->getY() == 0 || square1->getY() == 7)) {
+
+            // Revert promotion
+            if (move.getIsPromotion()) {
                 square1->setPieceAndColor(PAWN, square1->getColor());
             }
-            if (turn == WHITE) {
-                turn = BLACK;
-            }
-            else {
-                turn = WHITE;
-            }
 
-            // update king square
-            if (square1->getPiece() == KING) {
-                if (square1->getColor() == WHITE) {
-                    this->whiteKingSquare = square1;
-                }
-                else {
-                    this->blackKingSquare = square1;
-                }
-            }
-
-            this->lastMove = move;
+            // Update turn and last move
+            turn = (turn == WHITE) ? BLACK : WHITE;
+            lastMove = move;
         }
 
         Color getTurn() { return this->turn; }
