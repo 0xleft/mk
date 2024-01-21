@@ -21,7 +21,7 @@ src += $(addprefix src/chess/,\
 )
 
 CPPFLAGS = -std=c++11 -fno-exceptions
-CPPFLAGS += -Os -Wall
+CPPFLAGS += -O3 -Wall
 CPPFLAGS += $(shell $(NWLINK) eadk-cflags)
 CPPFLAGS += -Iinclude -Isrc -Isrc/engine -Isrc/chess
 LDFLAGS = -Wl,--relocatable

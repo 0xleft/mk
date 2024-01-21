@@ -3,7 +3,7 @@
 #include <chess/include.h>
 #include <display.h>
 #include <palette.h>
-#include <piecesui.h>
+#include "piecesui.h"
 
 namespace ChessUI {
     void drawPiece(Chess::Piece piece, Chess::Color color, int x, int y) {
@@ -36,7 +36,8 @@ namespace ChessUI {
             Chess::Square* square = board.getSquare(i);
             int x = i % 8;
             int y = i / 8;
-            EADK::Display::pushRectUniform(EADK::Screen::Rect, (x + y) % 2 == 0 ? White : Black);
+            EADK::Rect rect = {x * 30, y * 30, 30, 30};
+            EADK::Display::pushRectUniform(rect, (x + y) % 2 == 0 ? EADK::Color(0xEEEEEE) : EADK::Color(0xAAAAAA));
             if (square->getPiece() != Chess::Piece::EMPTY) {
                 drawPiece(square->getPiece(), square->getColor(), x, y);
             }

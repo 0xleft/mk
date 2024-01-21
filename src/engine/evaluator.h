@@ -78,7 +78,7 @@ namespace Evaluator {
         for (int i = 0; i < 64; i++) {
             Chess::Piece piece = board.getSquare(i)->getPiece();
             if (piece == Chess::Piece::EMPTY) continue;
-            score += applyPQTable(getPieceValue(piece, board.getSquare(i)->getColor()), i, piece, board.getSquare(i)->getColor());
+            score += getPieceValue(piece, board.getSquare(i)->getColor()), i, piece, board.getSquare(i)->getColor();
         }
         return score;
     }
@@ -86,20 +86,18 @@ namespace Evaluator {
     int evaluate(Chess::Board& board) {
         int score = 0;
         score += evaluateMaterial(board);
-        return board.getTurn() == Chess::Color::WHITE ? score : -score;
+        return score;
     }
 
-    int minmax(Chess::Board& board, int depth, int alpha, int beta) {
+    int minmax(Chess::Board& board, int depth) {
         if (depth == 0) return evaluate(board);
         std::vector<Chess::Move> moves = Chess::Generator::getLegalMoves(board);
         int bestScore = -9999;
         for (Chess::Move move : moves) {
-            board.move(move);
-            int score = -minmax(board, depth - 1, -beta, -alpha);
-            board.undo();
+            Chess::Board boardCopy = Chess::Board::copyBoard(board);
+            boardCopy.move(move);
+            int score = -minmax(boardCopy, depth - 1);
             if (score > bestScore) bestScore = score;
-            if (score > alpha) alpha = score;
-            if (alpha >= beta) break;
         }
         return bestScore;
     }
@@ -108,11 +106,11 @@ namespace Evaluator {
         std::vector<Chess::Move> moves = Chess::Generator::getLegalMoves(board);
         Chess::Move bestMove = moves[0];
         Chess::Board boardCopy = Chess::Board::copyBoard(board);
+
         int bestScore = -9999;
         for (Chess::Move move : moves) {
             boardCopy.move(move);
-            int score = -minmax(boardCopy, 2, -9999, 9999);
-            boardCopy.undo();
+            int score = -minmax(boardCopy, 2);
             if (score > bestScore) {
                 bestScore = score;
                 bestMove = move;

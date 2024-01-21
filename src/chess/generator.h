@@ -372,5 +372,17 @@ namespace Chess {
         bool isEnd(Board& board) {
             return getLegalMoves(board).size() == 0;
         };
+
+        bool isWhiteCheckmate(Board& board) {
+            return isWhiteCheck(board) && isEnd(board);
+        };
+
+        bool isBlackCheckmate(Board& board) {
+            return isBlackCheck(board) && isEnd(board);
+        };
+
+        bool isStalemate(Board& board) {
+            return !isWhiteCheck(board) && !isBlackCheck(board) && isEnd(board);
+        };
     }
 }
