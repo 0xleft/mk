@@ -10,8 +10,13 @@
 
 int main() {
     // set random
-    chess::Board board = chess::Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
-    std::cout << chess::attacks::RookTable->attacks->count() << std::endl;
+    for (int i = 0; i < 64; i++) {
+        chess::attacks::Magic c = chess::attacks::BishopTable[i];
+        std::cout << "magic: " << c.magic << " mask: " << c.mask << " shift: " << c.shift << std::endl;
+        for (int j = 0; j < 4096; j++) {
+            c.attacks[j];
+        }
+    }
 
     return 0;
 }

@@ -579,7 +579,6 @@ static void legalmoves(Movelist &movelist, const Board &board, int pieces) noexc
 template <chess::movegen::MoveGenType mt>
 static void legalmoves(Movelist &movelist, const Board &board, int pieces) {
     movelist.clear();
-    board.sideToMove();
 
     if (board.sideToMove() == Color::WHITE)
         legalmoves<Color::WHITE, mt>(movelist, board, pieces);

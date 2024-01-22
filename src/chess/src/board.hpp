@@ -115,7 +115,7 @@ class Board {
 
     /// @brief Get the current FEN string.
     /// @return
-    [[nodiscard]] std::string getFen(bool move_counters = true) const {
+    std::string getFen(bool move_counters = true) const {
         std::string ss;
         ss.reserve(100);
 
@@ -416,27 +416,27 @@ class Board {
     /// @brief Get the occupancy bitboard from us.
     /// @param color
     /// @return
-    [[nodiscard]] Bitboard us(Color color) const { return occ_bb_[color]; }
+    Bitboard us(Color color) const { return occ_bb_[color]; }
 
     /// @brief Get the occupancy bitboard of the enemy.
     /// @param color
     /// @return
-    [[nodiscard]] Bitboard them(Color color) const { return us(~color); }
+    Bitboard them(Color color) const { return us(~color); }
 
     /// @brief Get the current occupancy bitboard.
     /// Faster than calling all() or
     /// us(board.sideToMove()) | them(board.sideToMove()).
     /// @return
-    [[nodiscard]] Bitboard occ() const { return occ_bb_[0] | occ_bb_[1]; }
+    Bitboard occ() const { return occ_bb_[0] | occ_bb_[1]; }
 
     /// @brief recalculate all bitboards
     /// @return
-    [[nodiscard]] Bitboard all() const { return us(Color::WHITE) | us(Color::BLACK); }
+    Bitboard all() const { return us(Color::WHITE) | us(Color::BLACK); }
 
     /// @brief Returns the square of the king for a certain color
     /// @param color
     /// @return
-    [[nodiscard]] Square kingSq(Color color) const {
+    Square kingSq(Color color) const {
         assert(pieces(PieceType::KING, color) != Bitboard(0));
         return pieces(PieceType::KING, color).lsb();
     }
@@ -445,12 +445,12 @@ class Board {
     /// @param type
     /// @param color
     /// @return
-    [[nodiscard]] Bitboard pieces(PieceType type, Color color) const { return pieces_bb_[type] & occ_bb_[color]; }
+    Bitboard pieces(PieceType type, Color color) const { return pieces_bb_[type] & occ_bb_[color]; }
 
     /// @brief Returns all pieces of a certain type
     /// @param type
     /// @return
-    [[nodiscard]] Bitboard pieces(PieceType type) const {
+    Bitboard pieces(PieceType type) const {
         return pieces(type, Color::WHITE) | pieces(type, Color::BLACK);
     }
 
@@ -477,12 +477,12 @@ class Board {
 
     /// @brief Get the current hash key of the board
     /// @return
-    [[nodiscard]] U64 hash() const { return key_; }
-    [[nodiscard]] Color sideToMove() const { return stm_; }
-    [[nodiscard]] Square enpassantSq() const { return ep_sq_; }
-    [[nodiscard]] CastlingRights castlingRights() const { return cr_; }
-    [[nodiscard]] std::uint32_t halfMoveClock() const { return hfm_; }
-    [[nodiscard]] std::uint32_t fullMoveNumber() const { return 1 + plies_ / 2; }
+    U64 hash() const { return key_; }
+    Color sideToMove() const { return stm_; }
+    Square enpassantSq() const { return ep_sq_; }
+    CastlingRights castlingRights() const { return cr_; }
+    std::uint32_t halfMoveClock() const { return hfm_; }
+    std::uint32_t fullMoveNumber() const { return 1 + plies_ / 2; }
 
     void set960(bool is960) {
         chess960_ = is960;
@@ -491,11 +491,11 @@ class Board {
 
     /// @brief Checks if the current position is a chess960, aka. FRC/DFRC position.
     /// @return
-    [[nodiscard]] bool chess960() const { return chess960_; }
+    bool chess960() const { return chess960_; }
 
     /// @brief Get the castling rights as a string
     /// @return
-    [[nodiscard]] std::string getCastleString() const {
+    std::string getCastleString() const {
         std::string ss;
 
         auto convert = [](Color c, File file) {
@@ -530,7 +530,7 @@ class Board {
     /// a chess engine.
     /// @param count
     /// @return
-    [[nodiscard]] bool isRepetition(int count = 2) const {
+    bool isRepetition(int count = 2) const {
         uint8_t c = 0;
 
         for (int i = static_cast<int>(prev_states_.size()) - 2;
@@ -548,11 +548,11 @@ class Board {
     /// it's not necessarily a draw, since checkmate has higher priority, call getHalfMoveDrawType,
     /// to determine whether the position is a draw or checkmate.
     /// @return
-    [[nodiscard]] bool isHalfMoveDraw() const { return hfm_ >= 100; }
+    bool isHalfMoveDraw() const { return hfm_ >= 100; }
 
     /// @brief Only call this function if isHalfMoveDraw() returns true.
     /// @return
-    [[nodiscard]] std::pair<GameResultReason, GameResult> getHalfMoveDrawType() const {
+    std::pair<GameResultReason, GameResult> getHalfMoveDrawType() const {
         const Board &board = *this;
 
         Movelist movelist;
@@ -567,7 +567,7 @@ class Board {
 
     /// @brief Checks if the current position is a draw by insufficient material.
     /// @return
-    [[nodiscard]] bool isInsufficientMaterial() const {
+    bool isInsufficientMaterial() const {
         const auto count = occ().count();
 
         if (count == 2) return true;
@@ -591,7 +591,7 @@ class Board {
     /// This function calculates all legal moves for the current position to check if the game is
     /// over. If you are writing you should not use this function.
     /// @return
-    [[nodiscard]] std::pair<GameResultReason, GameResult> isGameOver() const {
+    std::pair<GameResultReason, GameResult> isGameOver() const {
         if (isHalfMoveDraw()) {
             return getHalfMoveDrawType();
         }
@@ -617,7 +617,7 @@ class Board {
     /// @param square
     /// @param color
     /// @return
-    [[nodiscard]] bool isAttacked(Square square, Color color) const {
+    bool isAttacked(Square square, Color color) const {
         if (attacks::pawn(~color, square) & pieces(PieceType::PAWN, color)) return true;
         if (attacks::knight(square) & pieces(PieceType::KNIGHT, color)) return true;
         if (attacks::king(square) & pieces(PieceType::KING, color)) return true;
@@ -631,18 +631,18 @@ class Board {
 
     /// @brief Checks if the current side to move is in check
     /// @return
-    [[nodiscard]] bool inCheck() const { return isAttacked(kingSq(stm_), ~stm_); }
+    bool inCheck() const { return isAttacked(kingSq(stm_), ~stm_); }
 
     /// @brief Checks if the given color has at least 1 piece thats not pawn and not king
     /// @return
-    [[nodiscard]] bool hasNonPawnMaterial(Color color) const {
+    bool hasNonPawnMaterial(Color color) const {
         return bool(pieces(PieceType::KNIGHT, color) | pieces(PieceType::BISHOP, color) |
                     pieces(PieceType::ROOK, color) | pieces(PieceType::QUEEN, color));
     }
 
     /// @brief Regenerates the zobrist hash key
     /// @return
-    [[nodiscard]] U64 zobrist() const {
+    U64 zobrist() const {
         U64 hash_key = 0ULL;
 
         auto wPieces = us(Color::WHITE);
