@@ -17,10 +17,10 @@ OBJ = $(SRC:$(SRC_DIR)/%.cpp=$(BUILD_DIR)/%.o)
 TEST_OBJ = $(TEST_SRC:$(TEST_DIR)/%.cpp=$(BUILD_DIR)/%.o)
 
 # Compiler flags
-CPPFLAGS = -std=c++11 -fno-exceptions -O3 -Wall -I../include -I$(SRC_DIR) -I$(SRC_DIR)/engine -I$(SRC_DIR)/chess
+CPPFLAGS = -std=c++11 -fno-exceptions -Wall -I../include -I$(SRC_DIR) -I$(SRC_DIR)/engine -I$(SRC_DIR)/chess -ffunction-sections -fdata-sections
 
 # Linker flags
-LDFLAGS =
+LDFLAGS = -Wl,--gc-sections
 
 # Targets
 .PHONY: all clean

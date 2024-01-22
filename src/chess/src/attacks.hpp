@@ -196,6 +196,7 @@ template <Color::underlying c>
     return attacks;
 }
 
+#ifdef PREGENERATOR
 /// @brief Initializes the magic bitboard tables for sliding pieces
 /// @param sq
 /// @param table
@@ -242,6 +243,7 @@ static auto init = []() {
     initAttacks();
     return 0;
 }();
+#endif
 
 }  // namespace attacks
 }  // namespace chess

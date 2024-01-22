@@ -5,18 +5,27 @@
 #include <string>
 #include <vector>
 #include <cheats.h>
-#include <engine/evaluator.h>
-#include <chess/src/include.hpp>
+//#include <engine/evaluator.h>
+#include <chess/src/bitboard.hpp>
+
+using U64 = std::uint64_t;
+struct Magic {
+    U64 mask;
+    U64 magic;
+    chess::Bitboard attacks[4096];
+    U64 shift;
+};
+
+namespace chess {
+    namespace attacks {
+        Magic BishopTable[64] = {};
+        Magic RookTable[64] = {};
+    }
+}
+
+#include "../pregenerator/hdmagics/hdmagics.hpp"
 
 int main() {
-    // set random
-    for (int i = 0; i < 64; i++) {
-        chess::attacks::Magic c = chess::attacks::BishopTable[i];
-        std::cout << "magic: " << c.magic << " mask: " << c.mask << " shift: " << c.shift << std::endl;
-        for (int j = 0; j < 4096; j++) {
-            c.attacks[j];
-        }
-    }
-
+    std::cout << chess::attacks::BishopTable[0].attacks[0] << std::endl;
     return 0;
 }

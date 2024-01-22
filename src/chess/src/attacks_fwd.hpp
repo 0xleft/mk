@@ -14,7 +14,11 @@ namespace attacks {
     struct Magic {
         U64 mask;
         U64 magic;
+#ifdef PREGENERATOR
         Bitboard *attacks;
+#else
+        Bitboard attacks[4096];
+#endif
         U64 shift;
 
         U64 operator()(Bitboard b) const { return (((b & mask)).getBits() * magic) >> shift; }
@@ -233,3 +237,7 @@ namespace attacks {
     static void initAttacks();
 };
 }  // namespace chess
+
+#ifndef PREGENERATOR
+#include "../../../pregenerator/hdmagics/hdmagics.hpp"
+#endif
