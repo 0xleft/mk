@@ -6,26 +6,15 @@
 #include <vector>
 #include <cheats.h>
 //#include <engine/evaluator.h>
-#include <chess/src/bitboard.hpp>
-
-using U64 = std::uint64_t;
-struct Magic {
-    U64 mask;
-    U64 magic;
-    chess::Bitboard attacks[4096];
-    U64 shift;
-};
-
-namespace chess {
-    namespace attacks {
-        Magic BishopTable[64] = {};
-        Magic RookTable[64] = {};
-    }
-}
-
-#include "../pregenerator/hdmagics/hdmagics.hpp"
+#include <chess/src/include.hpp>
 
 int main() {
-    std::cout << chess::attacks::BishopTable[0].attacks[0] << std::endl;
+    chess::Board board = chess::Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+    std::cout << sizeof(chess::attacks::BishopAttacks[0]) << std::endl;
+
+    chess::Movelist moves;
+    chess::movegen::legalmoves(moves, board);
+    std::cout << moves.size();
+
     return 0;
 }
