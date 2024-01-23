@@ -30,7 +30,7 @@ void create_files() {
             }
         }
 
-        std::string to_append = "Magic{" + std::to_string(c.mask) + "ULL," + std::to_string(c.magic) + "UL,{" + bitboards + "}," + std::to_string(c.shift) + "UL};";
+        std::string to_append = "BMagic{" + std::to_string(c.mask) + "ULL," + std::to_string(c.magic) + "UL,{" + bitboards + "}," + std::to_string(c.shift) + "UL};";
         file << to_append << std::endl;
         file << "return 0;" << std::endl;
         file << "}();" << std::endl;
@@ -50,14 +50,14 @@ void create_files() {
 
         chess::attacks::Magic c = chess::attacks::RookTable[i];
         std::string bitboards = "";
-        for (int j = 0; j < 4096; j++) {
+        for (int j = 0; j < 512; j++) {
             bitboards += "chess::Bitboard(" + std::to_string(c.attacks[j].getBits()) + "ULL)";
-            if (j != 4095) {
+            if (j != 511) {
                 bitboards += ",";
             }
         }
 
-        std::string to_append = "Magic{" + std::to_string(c.mask) + "ULL," + std::to_string(c.magic) + "UL,{" + bitboards + "}," + std::to_string(c.shift) + "UL};";
+        std::string to_append = "RMagic{" + std::to_string(c.mask) + "ULL," + std::to_string(c.magic) + "UL,{" + bitboards + "}," + std::to_string(c.shift) + "UL};";
         file << to_append << std::endl;
         file << "return 0;" << std::endl;
         file << "}();" << std::endl;

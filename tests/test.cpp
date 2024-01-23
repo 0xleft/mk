@@ -33,6 +33,8 @@ uint64_t perft(Board& board, int depth) {
 int main() {
     Board board = Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
 
+    std::cout << sizeof(chess::attacks::BishopTable) << std::endl;
+
     std::cout << perft(board, 4);
 
     return 0;
