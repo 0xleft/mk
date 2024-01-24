@@ -75,7 +75,11 @@ template <Color::underlying c>
 /// @param occupied
 /// @return
 [[nodiscard]] static Bitboard bishop(Square sq, Bitboard occupied) noexcept {
+#ifdef PREGENERATOR
     return BishopTable[sq.index()].attacks[BishopTable[sq.index()](occupied)];
+#else
+    return Bitboard(0ULL);
+#endif
 }
 
 /// @brief Returns the rook attacks for a given square
@@ -83,7 +87,11 @@ template <Color::underlying c>
 /// @param occupied
 /// @return
 [[nodiscard]] static Bitboard rook(Square sq, Bitboard occupied) noexcept {
+#ifdef PREGENERATOR
     return RookTable[sq.index()].attacks[RookTable[sq.index()](occupied)];
+#else
+    return Bitboard(0ULL);
+#endif
 }
 
 /// @brief Returns the queen attacks for a given square
@@ -196,6 +204,7 @@ template <Color::underlying c>
     return attacks;
 }
 
+#ifdef PREGENERATOR
 /// @brief Initializes the magic bitboard tables for sliding pieces
 /// @param sq
 /// @param table
@@ -242,6 +251,7 @@ static auto init = []() {
     initAttacks();
     return 0;
 }();
+#endif
 
 }  // namespace attacks
 }  // namespace chess

@@ -1,5 +1,3 @@
-#define CHESS_DEBUG
-
 #include <iostream>
 #include <stdio.h>
 #include <string>
@@ -33,7 +31,10 @@ uint64_t perft(Board& board, int depth) {
 int main() {
     Board board = Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
 
-    std::cout << perft(board, 4);
+    Movelist moves;
+    movegen::legalmoves(moves, board);
+    
+    std::cout << moves.size() << std::endl;
 
     return 0;
 }

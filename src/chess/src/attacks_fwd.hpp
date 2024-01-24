@@ -15,7 +15,11 @@ namespace attacks {
     struct Magic {
         U64 mask;
         U64 magic;
+#ifdef PREGENERATOR
         Bitboard *attacks;
+#else
+        Bitboard attacks[512];
+#endif
         U64 shift;
 
         U64 operator()(Bitboard b) const { return (((b & mask)).getBits() * magic) >> shift; }
@@ -116,6 +120,7 @@ namespace attacks {
         0xC040C00000000000, 0x0203000000000000, 0x0507000000000000, 0x0A0E000000000000, 0x141C000000000000,
         0x2838000000000000, 0x5070000000000000, 0xA0E0000000000000, 0x40C0000000000000};
 
+#ifdef PREGENERATOR
     static U64 RookMagics[64] = {
         0x8a80104000800020ULL, 0x140002000100040ULL,  0x2801880a0017001ULL,  0x100081001000420ULL,
         0x200020010080420ULL,  0x3001c0002010008ULL,  0x8480008002000100ULL, 0x2080088004402900ULL,
@@ -157,6 +162,7 @@ namespace attacks {
 
     Magic RookTable[64];
     Magic BishopTable[64];
+#endif
 
     static Bitboard MASK_RANK[8] = {0xff,         0xff00,         0xff0000,         0xff000000,
                                               0xff00000000, 0xff0000000000, 0xff000000000000, 0xff00000000000000};
@@ -234,3 +240,7 @@ namespace attacks {
     static void initAttacks();
 };
 }  // namespace chess
+
+// #ifndef PREGENERATOR
+// #include "../../../pregenerator/hdmagics/hdmagics.hpp"
+// #endif
