@@ -1,5 +1,8 @@
 #pragma once
 
+#include <display.h>
+#include <eadkpp.h>
+
 #include <array>
 #include <cstdint>
 

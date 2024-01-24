@@ -17,9 +17,12 @@ int main(int argc, char* argv[]) {
     Movelist moves;
     movegen::legalmoves(moves, board);
 
-    if (moves.size() == 0) {
-        EADK::Timing::msleep(1000);
+    if (moves.size() == 20) {
+        EADK::Display::pushRectUniform(EADK::Screen::Rect, Green);
+    } else {
+        EADK::Display::pushRectUniform(EADK::Screen::Rect, Red);
     }
+    EADK::Timing::msleep(1000);
 
 	return 0;
 }

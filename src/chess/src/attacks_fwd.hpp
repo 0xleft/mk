@@ -47,7 +47,7 @@ namespace attacks {
 
     // clang-format off
     // pre-calculated lookup table for pawn attacks
-    static Bitboard PawnAttacks[2][64] = {
+    const static Bitboard PawnAttacks[2][64] = {
         // white pawn attacks
         { 0x200, 0x500, 0xa00, 0x1400,
         0x2800, 0x5000, 0xa000, 0x4000,
@@ -89,7 +89,7 @@ namespace attacks {
     // clang-format on
 
     // pre-calculated lookup table for knight attacks
-    static Bitboard KnightAttacks[64] = {
+    const static Bitboard KnightAttacks[64] = {
         0x0000000000020400, 0x0000000000050800, 0x00000000000A1100, 0x0000000000142200, 0x0000000000284400,
         0x0000000000508800, 0x0000000000A01000, 0x0000000000402000, 0x0000000002040004, 0x0000000005080008,
         0x000000000A110011, 0x0000000014220022, 0x0000000028440044, 0x0000000050880088, 0x00000000A0100010,
@@ -105,7 +105,7 @@ namespace attacks {
         0x0044280000000000, 0x0088500000000000, 0x0010A00000000000, 0x0020400000000000};
 
     // pre-calculated lookup table for king attacks
-    static Bitboard KingAttacks[64] = {
+    const static Bitboard KingAttacks[64] = {
         0x0000000000000302, 0x0000000000000705, 0x0000000000000E0A, 0x0000000000001C14, 0x0000000000003828,
         0x0000000000007050, 0x000000000000E0A0, 0x000000000000C040, 0x0000000000030203, 0x0000000000070507,
         0x00000000000E0A0E, 0x00000000001C141C, 0x0000000000382838, 0x0000000000705070, 0x0000000000E0A0E0,
@@ -164,10 +164,10 @@ namespace attacks {
     Magic BishopTable[64];
 #endif
 
-    static Bitboard MASK_RANK[8] = {0xff,         0xff00,         0xff0000,         0xff000000,
+    const static Bitboard MASK_RANK[8] = {0xff,         0xff00,         0xff0000,         0xff000000,
                                               0xff00000000, 0xff0000000000, 0xff000000000000, 0xff00000000000000};
 
-    static Bitboard MASK_FILE[8] = {
+    const static Bitboard MASK_FILE[8] = {
         0x101010101010101,  0x202020202020202,  0x404040404040404,  0x808080808080808,
         0x1010101010101010, 0x2020202020202020, 0x4040404040404040, 0x8080808080808080,
     };
