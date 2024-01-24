@@ -120,7 +120,7 @@ class Bitboard {
 #endif
         int
         lsb() const noexcept {
-        // assert(bits != 0);
+        assert(bits != 0);
 #if __cplusplus >= 202002L
         return std::countr_zero(bits);
 #else

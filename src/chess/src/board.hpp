@@ -437,7 +437,7 @@ class Board {
     /// @param color
     /// @return
     Square kingSq(Color color) const {
-        // assert(pieces(PieceType::KING, color) != Bitboard(0));
+        assert(pieces(PieceType::KING, color) != Bitboard(0));
         return pieces(PieceType::KING, color).lsb();
     }
 

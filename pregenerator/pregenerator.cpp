@@ -50,9 +50,9 @@ void create_files() {
 
         chess::attacks::Magic c = chess::attacks::RookTable[i];
         std::string bitboards = "";
-        for (int j = 0; j < 512; j++) {
+        for (int j = 0; j < 4096; j++) {
             bitboards += "chess::Bitboard(" + std::to_string(c.attacks[j].getBits()) + "ULL)";
-            if (j != 511) {
+            if (j != 4095) {
                 bitboards += ",";
             }
         }

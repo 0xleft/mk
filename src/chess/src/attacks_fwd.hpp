@@ -12,7 +12,6 @@ namespace chess {
 namespace attacks {
     using U64 = std::uint64_t;
 
-#ifdef PREGENERATOR
     struct Magic {
         U64 mask;
         U64 magic;
@@ -21,25 +20,6 @@ namespace attacks {
 
         U64 operator()(Bitboard b) const { return (((b & mask)).getBits() * magic) >> shift; }
     };
-#else
-    struct RMagic {
-        U64 mask;
-        U64 magic;
-        Bitboard attacks[512];
-        U64 shift;
-
-        U64 operator()(Bitboard b) const { return (((b & mask)).getBits() * magic) >> shift; }
-    };
-
-    struct BMagic {
-        U64 mask;
-        U64 magic;
-        Bitboard attacks[512];
-        U64 shift;
-
-        U64 operator()(Bitboard b) const { return (((b & mask)).getBits() * magic) >> shift; }
-    };
-#endif
 
     /// @brief Slow function to calculate bishop attacks
     /// @param sq
@@ -53,7 +33,6 @@ namespace attacks {
     /// @return
     [[nodiscard]] static Bitboard rookAttacks(Square sq, Bitboard occupied);
 
-#ifdef PREGENERATOR
     /// @brief Initializes the magic bitboard tables for sliding pieces
     /// @param sq
     /// @param table
@@ -61,7 +40,6 @@ namespace attacks {
     /// @param attacks
     static void initSliders(Square sq, Magic table[], U64 magic,
                             const std::function<Bitboard(Square, Bitboard)> &attacks);
-#endif
 
     // clang-format off
     // pre-calculated lookup table for pawn attacks
@@ -138,7 +116,6 @@ namespace attacks {
         0xC040C00000000000, 0x0203000000000000, 0x0507000000000000, 0x0A0E000000000000, 0x141C000000000000,
         0x2838000000000000, 0x5070000000000000, 0xA0E0000000000000, 0x40C0000000000000};
 
-#ifdef PREGENERATOR
     static U64 RookMagics[64] = {
         0x8a80104000800020ULL, 0x140002000100040ULL,  0x2801880a0017001ULL,  0x100081001000420ULL,
         0x200020010080420ULL,  0x3001c0002010008ULL,  0x8480008002000100ULL, 0x2080088004402900ULL,
@@ -174,18 +151,12 @@ namespace attacks {
         0x802241102020002ULL,  0x20906061210001ULL,   0x5a84841004010310ULL, 0x4010801011c04ULL,
         0xa010109502200ULL,    0x4a02012000ULL,       0x500201010098b028ULL, 0x8040002811040900ULL,
         0x28000010020204ULL,   0x6000020202d0240ULL,  0x8918844842082200ULL, 0x4010011029020020ULL};
-#endif
 
     Bitboard RookAttacks[0x19000];
     Bitboard BishopAttacks[0x1480];
 
-#ifdef PREGENERATOR
     Magic RookTable[64];
     Magic BishopTable[64];
-#else
-    RMagic RookTable[64];
-    BMagic BishopTable[64];
-#endif
 
     static Bitboard MASK_RANK[8] = {0xff,         0xff00,         0xff0000,         0xff000000,
                                               0xff00000000, 0xff0000000000, 0xff000000000000, 0xff00000000000000};
@@ -263,7 +234,3 @@ namespace attacks {
     static void initAttacks();
 };
 }  // namespace chess
-
-#ifndef PREGENERATOR
-#include "../../../pregenerator/hdmagics/hdmagics.hpp"
-#endif
