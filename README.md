@@ -17,4 +17,4 @@ make run
 
 ## Brick wall:
 
-When launching tests for the first move it correctly says 20 legal moves; But on numworks it says 0 legal moves;
+Im too lazy to optimize for the insane limitations of memory on numworks
